@@ -17,16 +17,14 @@
 
 /* ── Reset total ─────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { overflow: hidden; height: 100%; }
+html { overflow-x: hidden; }
 body {
   background: var(--c-black);
   color: var(--c-offwhite);
   font-family: var(--font-sans);
   cursor: none;
-  overflow: hidden;
-  height: 100%;
-  position: fixed;
-  width: 100%;
+  overflow-x: hidden;
+  /* height driven by JS */
 }
 img { display: block; width: 100%; height: 100%; object-fit: cover; }
 a { color: inherit; text-decoration: none; }
@@ -197,10 +195,13 @@ a { color: inherit; text-decoration: none; }
 /* Toutes les scènes sont superposées en fixed */
 .scene {
   position: fixed;
-  inset: 0;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: 10;
   pointer-events: none;
   will-change: transform, opacity, clip-path;
+  overflow: hidden;
 }
 .scene.is-active { pointer-events: auto; }
 
