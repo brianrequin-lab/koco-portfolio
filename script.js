@@ -1,13 +1,18 @@
-/* ===== KOCO. — SCRIPT CINÉMATIQUE v4 ===== */
-/* Loader + GSAP + ScrollTrigger + Lenis      */
+/* ═══════════════════════════════════════════════════
+   KOCO. — EXPÉRIENCE IMMERSIVE ORYZO-STYLE
+   Scroll = timeline. Pas de pages. Pas de défilement.
+   Juste une transformation continue dans l'espace.
+═══════════════════════════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', () => {
   gsap.registerPlugin(ScrollTrigger);
 
-  /* ─────────────────────────────────────────
-     DONNÉES DES ŒUVRES
-  ───────────────────────────────────────── */
-  const artworkData = [
+  /* ─── Config scènes ─────────────────────────────── */
+  const SCENES      = 4;
+  const SCENE_DEPTH = 1200; // px de scroll par scène
+
+  /* ─── Données œuvres ────────────────────────────── */
+  const ARTWORKS = [
     { num:'01', title:'Sans titre 01', desc:'Acrylique sur toile — 2025' },
     { num:'02', title:'Sans titre 02', desc:'Acrylique et spray sur toile — 2025' },
     { num:'03', title:'Sans titre 03', desc:'Acrylique sur toile — 2025' },
@@ -17,70 +22,44 @@ document.addEventListener('DOMContentLoaded', () => {
     { num:'07', title:'Sans titre 07', desc:'Acrylique sur toile — 2025' },
   ];
 
-  /* ─────────────────────────────────────────
-     WILL-CHANGE GPU bootstrap
-  ───────────────────────────────────────── */
-  gsap.set([
-    '#hero', '.hero-bg', '.hero-img-bg img', '.hero-content',
-    '.float-item', '.title-inner', '.title-period',
-    '.artwork', '.artwork-img-wrap img',
-    '.about-image-frame', '.about-img',
-    '.contact-bg-art img', '.marquee-track',
-    '#navbar', '#loader'
-  ], { force3D: true });
+  /* ─── GPU bootstrap ─────────────────────────────── */
+  gsap.set('*', { force3D: true });
 
-  /* ─────────────────────────────────────────
-     1.  LOADER CINÉMATIQUE
-  ───────────────────────────────────────── */
+  /* ══════════════════════════════════════════════════
+     1. LOADER
+  ══════════════════════════════════════════════════ */
   const loader      = document.getElementById('loader');
   const loaderBar   = loader.querySelector('.loader-bar');
   const loaderLetters = loader.querySelectorAll('.loader-text span');
   const loaderCounter = loader.querySelector('.loader-counter');
 
-  // Counter animation
   let count = 0;
-  gsap.to(loaderCounter, { opacity: 1, duration: 0.3 });
-  const countInterval = setInterval(() => {
-    count += Math.ceil(Math.random() * 15);
-    if (count >= 100) {
-      count = 100;
-      clearInterval(countInterval);
-    }
-    loaderCounter.textContent = String(count).padStart(3, '0');
-  }, 60);
+  gsap.to(loaderCounter, { opacity: 1, duration: 0.4 });
+  const tick = setInterval(() => {
+    count += Math.ceil(Math.random() * 14);
+    if (count >= 100) { count = 100; clearInterval(tick); }
+    loaderCounter.textContent = String(count).padStart(3,'0');
+  }, 55);
 
-  // Barre de chargement
   gsap.to(loaderBar, { width: '100%', duration: 2.2, ease: 'power2.inOut' });
+  gsap.to(loaderLetters, { y: 0, duration: 1, stagger: 0.08, ease: 'expo.out', delay: 0.3 });
 
-  // Lettres tombantes
-  gsap.to(loaderLetters, {
-    y: 0, duration: 1, stagger: 0.07,
-    ease: 'expo.out', delay: 0.3, force3D: true
-  });
-
-  // Exit du loader
-  const loaderExit = gsap.timeline({ delay: 2.4 });
+  const loaderExit = gsap.timeline({ delay: 2.3 });
   loaderExit
-    .to(loaderLetters, {
-      y: '-110%', duration: 0.7, stagger: 0.05,
-      ease: 'expo.in', force3D: true
-    })
+    .to(loaderLetters, { y: '-110%', duration: 0.7, stagger: 0.05, ease: 'expo.in' })
     .to(loaderCounter, { opacity: 0, duration: 0.3 }, '<')
-    .to(loader, {
-      yPercent: -100, duration: 0.9,
-      ease: 'expo.inOut', force3D: true
-    }, '-=0.1')
+    .to(loader, { yPercent: -100, duration: 0.85, ease: 'expo.inOut' }, '-=0.1')
     .set(loader, { display: 'none' })
-    .add(() => initAnimations(), '-=0.2');
+    .add(() => boot(), '-=0.15');
 
-  /* ─────────────────────────────────────────
-     2.  INIT (après loader)
-  ───────────────────────────────────────── */
-  function initAnimations() {
+  /* ══════════════════════════════════════════════════
+     2. BOOT — tout s'initialise après le loader
+  ══════════════════════════════════════════════════ */
+  function boot() {
 
-    /* ── LENIS ──────────────────────────── */
+    /* ── Lenis : scroll natif → virtuel ────────────── */
     const lenis = new Lenis({
-      duration: 1.6,
+      duration: 2.0,
       easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smooth: true,
       smoothTouch: false,
@@ -89,405 +68,307 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.ticker.lagSmoothing(0);
     lenis.on('scroll', ScrollTrigger.update);
 
-    /* ── PROGRESS BAR ────────────────────── */
+    /* ── Hauteur du body (driver invisible) ─────────── */
+    document.body.style.height = (SCENES * SCENE_DEPTH + window.innerHeight) + 'px';
+
+    /* ── Progress bar ───────────────────────────────── */
     const progressFill = document.getElementById('progress-fill');
     lenis.on('scroll', ({ progress }) => {
       gsap.set(progressFill, { width: (progress * 100) + '%' });
     });
 
-    /* ── CURSEUR MAGNÉTIQUE ──────────────── */
+    /* ── Curseur magnétique ─────────────────────────── */
     const dot  = document.getElementById('cursor-dot');
     const ring = document.getElementById('cursor-ring');
-    const ringLabel = ring ? ring.querySelector('.cursor-label') : null;
-    let mx = 0, my = 0, rx = 0, ry = 0;
-
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-
+    const rl   = ring.querySelector('.cursor-label');
+    let mx=0, my=0, rx=0, ry=0;
+    document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
     gsap.ticker.add(() => {
-      if (!dot || !ring) return;
       gsap.set(dot,  { x: mx, y: my });
-      rx += (mx - rx) * 0.1;
-      ry += (my - ry) * 0.1;
+      rx += (mx-rx)*0.1; ry += (my-ry)*0.1;
       gsap.set(ring, { x: rx, y: ry });
     });
-
-    // Hover sur liens/boutons
-    document.querySelectorAll('a, button').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        gsap.to(ring, { width: 56, height: 56, duration: 0.35, ease: 'power2.out' });
-        gsap.to(dot,  { scale: 0, duration: 0.2 });
-      });
-      el.addEventListener('mouseleave', () => {
-        gsap.to(ring, { width: 36, height: 36, duration: 0.35, ease: 'power2.out' });
-        gsap.to(dot,  { scale: 1, duration: 0.2 });
-        if (ringLabel) gsap.to(ringLabel, { opacity: 0, scale: 0.5, duration: 0.2 });
-      });
+    document.querySelectorAll('a,button').forEach(el => {
+      el.addEventListener('mouseenter', () => { gsap.to(ring,{width:52,height:52,duration:0.3,ease:'power2.out'}); gsap.to(dot,{scale:0,duration:0.2}); });
+      el.addEventListener('mouseleave', () => { gsap.to(ring,{width:34,height:34,duration:0.3,ease:'power2.out'}); gsap.to(dot,{scale:1,duration:0.2}); gsap.to(rl,{opacity:0,scale:0.5,duration:0.2}); });
     });
-
-    // Hover sur les œuvres — curseur "VOIR"
     document.querySelectorAll('.artwork').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        gsap.to(ring, { width: 72, height: 72, duration: 0.4, ease: 'back.out(2)' });
-        gsap.to(dot,  { scale: 0, duration: 0.2 });
-        if (ringLabel) gsap.to(ringLabel, { opacity: 1, scale: 1, duration: 0.3 });
-      });
-      el.addEventListener('mouseleave', () => {
-        gsap.to(ring, { width: 36, height: 36, duration: 0.35, ease: 'power2.out' });
-        gsap.to(dot,  { scale: 1, duration: 0.2 });
-        if (ringLabel) gsap.to(ringLabel, { opacity: 0, scale: 0.5, duration: 0.2 });
-      });
+      el.addEventListener('mouseenter', () => { gsap.to(ring,{width:68,height:68,duration:0.4,ease:'back.out(2)'}); gsap.to(dot,{scale:0,duration:0.2}); gsap.to(rl,{opacity:1,scale:1,duration:0.3}); });
+      el.addEventListener('mouseleave', () => { gsap.to(ring,{width:34,height:34,duration:0.35}); gsap.to(dot,{scale:1,duration:0.2}); gsap.to(rl,{opacity:0,scale:0.5,duration:0.2}); });
     });
 
-    /* ── NAV HIDE/SHOW ───────────────────── */
-    const navbar = document.getElementById('navbar');
-    let lastScrollY = 0;
-    lenis.on('scroll', ({ scroll }) => {
-      const dir = scroll - lastScrollY;
-      if (scroll > 100) {
-        gsap.to(navbar, { y: dir > 3 ? -100 : 0, duration: 0.5, ease: 'power2.out' });
-      } else {
-        gsap.to(navbar, { y: 0, duration: 0.4 });
-      }
-      lastScrollY = scroll;
-    });
-
-    /* ── NAVIGATION DOUCE ────────────────── */
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
+    /* ── Nav clics → scroll vers scène ─────────────── */
+    document.querySelectorAll('[data-scene]').forEach(a => {
       a.addEventListener('click', e => {
         e.preventDefault();
-        const target = document.querySelector(a.getAttribute('href'));
-        if (target) lenis.scrollTo(target, { offset: -80, duration: 1.8 });
+        const s = parseInt(a.dataset.scene);
+        lenis.scrollTo(s * SCENE_DEPTH, { duration: 1.8, easing: t => Math.min(1, 1.001 - Math.pow(2,-10*t)) });
       });
     });
 
-    /* ─────────────────────────────────────────
-       3.  HERO — ouverture cinématique
-    ───────────────────────────────────────── */
-    const heroTL = gsap.timeline({ defaults: { ease: 'expo.out', force3D: true } });
+    /* ══════════════════════════════════════════════════
+       3. SCÈNES FIXED — la magie
+       Le scroll déplace une valeur virtuelle "progress" (0→1)
+       On répartit ce progress en N tranches, une par scène.
+    ══════════════════════════════════════════════════ */
 
-    // Rideau qui s'ouvre
+    const scenes = {
+      hero:    document.getElementById('scene-hero'),
+      gallery: document.getElementById('scene-gallery'),
+      about:   document.getElementById('scene-about'),
+      contact: document.getElementById('scene-contact'),
+    };
+
+    /* ── État des scènes ─────────────────────────────── */
+    // Chaque scène a un range [start, end] en px de scroll
+    const ranges = [
+      { id: 'hero',    start: 0,              end: SCENE_DEPTH },
+      { id: 'gallery', start: SCENE_DEPTH,    end: SCENE_DEPTH*2 },
+      { id: 'about',   start: SCENE_DEPTH*2,  end: SCENE_DEPTH*3 },
+      { id: 'contact', start: SCENE_DEPTH*3,  end: SCENE_DEPTH*4 },
+    ];
+
+    /* ── Intro Hero ─────────────────────────────────── */
+    const heroTL = gsap.timeline({ defaults: { ease: 'expo.out' } });
     heroTL
-      .to('.hero-curtain.left',  { xPercent: -100, duration: 1.4, ease: 'expo.inOut' })
-      .to('.hero-curtain.right', { xPercent: 100,  duration: 1.4, ease: 'expo.inOut' }, '<')
+      .to('.eyebrow-line',  { scaleX:1, opacity:1, duration:0.6, transformOrigin:'left' })
+      .to('.eyebrow-text',  { opacity:1, duration:0.5 }, '-=0.3')
+      .to('.title-inner',   { y:0, duration:1.0, stagger:0.14 }, '-=0.4')
+      .to('.title-period',  { y:0, duration:0.8 }, '-=0.5')
+      .to('.meta-item',     { y:0, opacity:1, duration:0.7, stagger:0.07 }, '-=0.4')
+      .to('.meta-dot',      { opacity:1, duration:0.4, stagger:0.07 }, '<')
+      .to('.hero-sub',      { opacity:1, duration:0.6 }, '-=0.3')
+      .to(['.float-1','.float-2','.float-3'], {
+          opacity:1, y:0, duration:0.9, stagger:0.12, ease:'back.out(1.3)'
+        }, '-=0.5')
+      .to('.scene-number',  { opacity:1, duration:0.5 }, '-=0.4')
+      .to('.scroll-hint',   { opacity:1, duration:0.5 }, '-=0.4');
 
-      // Image fond apparaît
-      .to('.hero-img-bg img', { opacity: 1, scale: 1, duration: 1.6, ease: 'power2.out' }, '-=0.8')
+    /* Préparer les floats */
+    gsap.set(['.float-1','.float-2','.float-3'], { y:40 });
 
-      // Orbes
-      .to('.hero-orb', { opacity: 1, duration: 1.2, stagger: 0.2 }, '-=1.2')
+    /* ── Fonction : progress local [0→1] pour une scène ─ */
+    function localP(scroll, range) {
+      return gsap.utils.clamp(0, 1, (scroll - range.start) / (range.end - range.start));
+    }
 
-      // Eyebrow line + text
-      .to('.eyebrow-line', { scaleX: 1, opacity: 1, duration: 0.6 }, '-=0.6')
-      .to('.eyebrow-text', { opacity: 1, duration: 0.5 }, '-=0.3')
+    /* ── Fonctions de transition ─────────────────────── */
+    // Entrée d'une scène (0→1) : elle arrive de l'arrière (scale + opacity)
+    function sceneIn(el, p) {
+      // p: 0 = invisible derrière, 1 = pleinement visible
+      const ease = gsap.parseEase('power2.out');
+      const ep   = ease(p);
+      gsap.set(el, {
+        opacity:    gsap.utils.interpolate(0, 1, ep),
+        scale:      gsap.utils.interpolate(1.06, 1, ep),
+        filter:     `blur(${gsap.utils.interpolate(8, 0, ep)}px)`,
+        willChange: 'transform, opacity, filter',
+      });
+    }
 
+    // Sortie d'une scène (0→1) : elle part vers l'avant (scale down + opacity)
+    function sceneOut(el, p) {
+      const ease = gsap.parseEase('power2.in');
+      const ep   = ease(p);
+      gsap.set(el, {
+        opacity:    gsap.utils.interpolate(1, 0, ep),
+        scale:      gsap.utils.interpolate(1, 0.94, ep),
+        filter:     `blur(${gsap.utils.interpolate(0, 12, ep)}px)`,
+      });
+    }
+
+    /* ── Ambiance : orbes qui vivent en permanence ────── */
+    gsap.to('.s-hero-bg img', { scale: 1.12, duration: 12, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+
+    // Fond contact subtil
+    gsap.to('.contact-bg-wrap img', { scale: 1.1, duration: 16, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+
+    // Marquee
+    const mTrack = document.querySelector('.marquee-track');
+    if (mTrack) {
+      const mw = mTrack.scrollWidth / 3;
+      gsap.to(mTrack, { x:-mw, duration:20, ease:'none', repeat:-1,
+        modifiers:{ x: gsap.utils.unitize(x => parseFloat(x) % mw) }
+      });
+    }
+
+    /* ── MAIN SCROLL HANDLER ─────────────────────────── */
+    let currentScene = 0;
+    let heroAnimated = false;
+
+    // Animations internes de chaque scène (lancées une fois à l'entrée)
+    const sceneEnterFns = {
+      gallery: animateGalleryIn,
+      about:   animateAboutIn,
+      contact: animateContactIn,
+    };
+    const sceneEntered = { gallery:false, about:false, contact:false };
+
+    lenis.on('scroll', ({ scroll }) => {
+      const totalMax = SCENES * SCENE_DEPTH;
+      const gp = scroll / totalMax; // progress global 0→1
+      const rawScene = scroll / SCENE_DEPTH;
+      const newScene = Math.min(Math.floor(rawScene), SCENES-1);
+
+      /* Mise à jour progress bar */
+      gsap.set(progressFill, { width: (gp * 100) + '%' });
+
+      /* ── Logique de transition par scène ─────────── */
+      ranges.forEach((range, i) => {
+        const el = scenes[range.id];
+        if (!el) return;
+
+        const p = localP(scroll, range);
+
+        if (i === 0) {
+          // HERO : sort vers le bas quand on scroll
+          if (p < 0.7) {
+            // reste visible
+            gsap.set(el, { opacity: 1, scale: 1, filter: 'blur(0px)' });
+            // parallaxe fond
+            gsap.set('.s-hero-bg img', { y: scroll * 0.25 });
+            gsap.set('.s-hero-content', { y: scroll * 0.15, opacity: 1 });
+            gsap.set('.float-1', { y: 40 - scroll * 0.18 });
+            gsap.set('.float-2', { y: 0  - scroll * 0.13 });
+            gsap.set('.float-3', { y: 0  - scroll * 0.10 });
+          } else {
+            // sort
+            const exitP = (p - 0.7) / 0.3;
+            sceneOut(el, exitP);
+            gsap.set('.s-hero-content', { y: scroll * 0.15, opacity: gsap.utils.interpolate(1, 0, exitP) });
+          }
+        } else {
+          // Autres scènes
+          const prevRange = ranges[i-1];
+          const transP = localP(scroll, {
+            start: prevRange.end - SCENE_DEPTH * 0.35,
+            end:   prevRange.end + SCENE_DEPTH * 0.15,
+          });
+          const outP = (i < SCENES-1) ? localP(scroll, {
+            start: range.end - SCENE_DEPTH * 0.3,
+            end:   range.end,
+          }) : 0;
+
+          if (transP <= 0) {
+            gsap.set(el, { opacity:0, scale:1.06, filter:'blur(8px)' });
+          } else if (outP > 0 && i < SCENES-1) {
+            // sortie
+            sceneOut(el, outP);
+          } else {
+            // entrée / visible
+            sceneIn(el, transP);
+            el.classList.add('is-active');
+
+            // Déclencher anim interne une seule fois
+            const key = range.id;
+            if (!sceneEntered[key] && transP > 0.4 && sceneEnterFns[key]) {
+              sceneEntered[key] = true;
+              sceneEnterFns[key]();
+            }
+          }
+        }
+      });
+
+      /* Parallaxe images galerie sur le scroll interne */
+      if (rawScene >= 1 && rawScene < 2) {
+        const gScroll = scroll - SCENE_DEPTH;
+        document.querySelectorAll('.artwork-img-wrap').forEach((w, i) => {
+          gsap.set(w.querySelector('img'), { y: gScroll * 0.04 * (i%2===0?1:-0.7) });
+        });
+      }
+    });
+
+    /* ══════════════════════════════════════════════════
+       4. ANIMATIONS INTERNES PAR SCÈNE
+    ══════════════════════════════════════════════════ */
+
+    function animateGalleryIn() {
+      // Label header
+      gsap.from('.gallery-label', { y: -20, opacity: 0, duration: 0.8, ease: 'expo.out' });
+      gsap.from('.gl-line', { scaleX: 0, duration: 1.2, ease: 'power3.out', transformOrigin: 'left', delay: 0.2 });
+      // Artworks : entrée en cascade
+      gsap.from('.artwork', {
+        y: 40, opacity: 0, scale: 0.97,
+        duration: 0.9, stagger: { amount: 0.5, from: 'start' },
+        ease: 'expo.out', delay: 0.1
+      });
+    }
+
+    function animateAboutIn() {
       // Titre
-      .to('.title-inner', { y: 0, duration: 1.0, stagger: 0.12 }, '-=0.4')
-      .to('.title-period', { y: 0, duration: 0.8 }, '-=0.5')
-
-      // Meta + sous-titre
-      .to('.meta-item', { y: 0, opacity: 1, duration: 0.7, stagger: 0.07 }, '-=0.4')
-      .to('.meta-dot',  { opacity: 1, duration: 0.4, stagger: 0.07 }, '<')
-      .to('.hero-sub',  { y: 0, opacity: 1, duration: 0.6 }, '-=0.3')
-
-      // Miniatures flottantes
-      .to('.float-1', { opacity: 1, y: 0, duration: 0.9, ease: 'back.out(1.3)' }, '-=0.5')
-      .to('.float-2', { opacity: 1, y: 0, duration: 0.9, delay: 0.12, ease: 'back.out(1.3)' }, '<')
-      .to('.float-3', { opacity: 1, y: 0, duration: 0.9, delay: 0.24, ease: 'back.out(1.3)' }, '<')
-
-      // Éléments UI
-      .to('.scene-number', { opacity: 1, duration: 0.5 }, '-=0.4')
-      .to('.scroll-hint',  { opacity: 1, duration: 0.5 }, '-=0.4');
-
-    // Préparer les floats
-    gsap.set(['.float-1','.float-2','.float-3'], { y: 40, force3D: true });
-
-    /* Parallaxe hero au scroll */
-    ScrollTrigger.create({
-      trigger: '#hero',
-      start: 'top top',
-      end: 'bottom top',
-      scrub: 1.5,
-      onUpdate: self => {
-        const p = self.progress;
-        gsap.set('.hero-img-bg img', { y: p * 150, scale: 1 + p * 0.05, force3D: true });
-        gsap.set('.hero-content',    { y: p * 80, force3D: true });
-        gsap.set('.orb-1',           { y: p * -80, force3D: true });
-        gsap.set('.orb-2',           { y: p * -50, force3D: true });
-        gsap.set('.float-1',         { y: 40 + p * -130, force3D: true });
-        gsap.set('.float-2',         { y: 0  + p * -100, force3D: true });
-        gsap.set('.float-3',         { y: 0  + p * -70,  force3D: true });
-      }
-    });
-
-    /* ─────────────────────────────────────────
-       4.  SECTION HEADERS
-    ───────────────────────────────────────── */
-    document.querySelectorAll('.section-header').forEach(header => {
-      const num   = header.querySelector('.section-num');
-      const title = header.querySelector('.section-title');
-      const line  = header.querySelector('.section-line');
-      const count = header.querySelector('.section-count');
-
-      gsap.set(line, { scaleX: 0, transformOrigin: 'left' });
-      gsap.set([num, title], { y: 30, opacity: 0 });
-      if (count) gsap.set(count, { opacity: 0 });
-
-      ScrollTrigger.create({
-        trigger: header,
-        start: 'top 85%',
-        once: true,
-        onEnter: () => {
-          const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-          tl.to(num,   { y: 0, opacity: 1, duration: 0.7 })
-            .to(title, { y: 0, opacity: 1, duration: 0.7 }, '-=0.5')
-            .to(line,  { scaleX: 1, duration: 1.2, ease: 'power3.out' }, '-=0.5');
-          if (count) tl.to(count, { opacity: 1, duration: 0.4 }, '-=0.3');
-        }
-      });
-    });
-
-    /* ─────────────────────────────────────────
-       5.  GALERIE — entrées scrubbed + parallaxe
-    ───────────────────────────────────────── */
-    document.querySelectorAll('.artwork').forEach((art, i) => {
-      const img = art.querySelector('.artwork-img-wrap img');
-      const cap = art.querySelector('.artwork-caption');
-
-      // Entrance scrub depuis le bas
-      gsap.from(art, {
-        scrollTrigger: {
-          trigger: art,
-          start: 'top 92%',
-          end: 'top 52%',
-          scrub: 0.8,
-        },
-        y: 80, opacity: 0, scale: 0.97,
-        ease: 'none', force3D: true,
-      });
-
-      // Parallaxe image dans le cadre
-      if (img) {
-        gsap.to(img, {
-          scrollTrigger: {
-            trigger: art,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.2,
-          },
-          y: -60, ease: 'none', force3D: true,
-        });
-      }
-
-      // Caption slide-up
-      if (cap) {
-        gsap.from(cap, {
-          scrollTrigger: {
-            trigger: art,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse'
-          },
-          y: 20, opacity: 0, duration: 0.6,
-          delay: 0.15 * (i % 3), ease: 'power3.out',
-        });
-      }
-    });
-
-    /* ─────────────────────────────────────────
-       6.  À PROPOS — image + texte masqué
-    ───────────────────────────────────────── */
-    const aboutSection = document.getElementById('about');
-    const aboutFrame   = document.querySelector('.about-image-frame');
-
-    // Image parallaxe (frame entière)
-    if (aboutFrame) {
-      gsap.to(aboutFrame, {
-        scrollTrigger: {
-          trigger: aboutSection,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1.8,
-        },
-        y: -80, ease: 'none', force3D: true,
-      });
+      gsap.to('.abt-inner', { y: 0, duration: 1.0, stagger: 0.12, ease: 'expo.out', delay: 0.1 });
+      // Paragraphes
+      gsap.to('.about-p', { y: 0, opacity: 1, duration: 0.8, stagger: 0.12, ease: 'power3.out', delay: 0.3 });
+      // Stats
+      gsap.to('.about-stats', { opacity: 1, duration: 0.7, delay: 0.5, ease: 'power2.out' });
+      // Tags
+      gsap.to('.about-tags span', { y: 0, opacity: 1, duration: 0.5, stagger: 0.07, ease: 'back.out(1.5)', delay: 0.6 });
+      // Image about — parallaxe lente
+      gsap.to('.about-left img', { scale: 1.06, duration: 10, ease: 'sine.inOut', yoyo: true, repeat: -1 });
     }
 
-    // Titre about — wrapping manuel
-    document.querySelectorAll('.about-title-line').forEach((line, i) => {
-      const inner = document.createElement('span');
-      inner.className = 'inner-word';
-      inner.innerHTML = line.innerHTML;
-      line.innerHTML = '';
-      line.appendChild(inner);
-      gsap.set(inner, { y: '110%', force3D: true });
-
-      gsap.to(inner, {
-        scrollTrigger: {
-          trigger: '.about-title',
-          start: 'top 82%',
-          toggleActions: 'play none none reverse'
-        },
-        y: 0, duration: 0.9, delay: i * 0.12,
-        ease: 'expo.out', force3D: true,
-      });
-    });
-
-    // Paragraphes
-    document.querySelectorAll('.about-p').forEach((p, i) => {
-      gsap.from(p, {
-        scrollTrigger: { trigger: p, start: 'top 90%', toggleActions: 'play none none reverse' },
-        y: 25, opacity: 0, duration: 0.8,
-        delay: i * 0.1, ease: 'power3.out',
-      });
-    });
-
-    // Stats
-    gsap.from('.stat', {
-      scrollTrigger: { trigger: '.about-stats', start: 'top 85%', toggleActions: 'play none none reverse' },
-      y: 30, opacity: 0, duration: 0.7,
-      stagger: 0.1, ease: 'power3.out',
-    });
-
-    // Tags
-    gsap.to('.about-tags span', {
-      scrollTrigger: { trigger: '.about-tags', start: 'top 90%', toggleActions: 'play none none reverse' },
-      y: 0, opacity: 1, duration: 0.5,
-      stagger: 0.07, ease: 'back.out(1.5)',
-    });
-
-    /* ─────────────────────────────────────────
-       7.  CONTACT — titre masqué + parallaxe
-    ───────────────────────────────────────── */
-    const contactBg = document.querySelector('.contact-bg-art img');
-    if (contactBg) {
-      gsap.to(contactBg, {
-        scrollTrigger: {
-          trigger: '#contact',
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 2,
-        },
-        y: -100, scale: 1.15,
-        ease: 'none', force3D: true,
-      });
+    function animateContactIn() {
+      // Label line
+      gsap.to('.cl-line', { scaleX: 1, duration: 1.0, ease: 'power3.out', delay: 0.1 });
+      gsap.from('.contact-label', { y: -20, opacity: 0, duration: 0.7, ease: 'expo.out' });
+      // Titre lignes
+      gsap.to('.ct-inner', { y: 0, duration: 1.1, stagger: 0.18, ease: 'expo.out', delay: 0.15 });
+      // Sub + link
+      gsap.to('.contact-sub',  { opacity: 1, duration: 0.7, delay: 0.55, ease: 'power3.out' });
+      gsap.to('.contact-link', { opacity: 1, y: 0, duration: 0.7, delay: 0.7, ease: 'power3.out' });
     }
 
-    // Titre contact lignes masquées
-    document.querySelectorAll('.ct-line').forEach((line, i) => {
-      const inner = document.createElement('span');
-      inner.className = 'inner-word';
-      inner.innerHTML = line.innerHTML;
-      line.innerHTML = '';
-      line.appendChild(inner);
-      gsap.set(inner, { y: '110%', force3D: true });
-
-      gsap.to(inner, {
-        scrollTrigger: {
-          trigger: '.contact-title',
-          start: 'top 82%',
-          toggleActions: 'play none none reverse'
-        },
-        y: 0, duration: 1.1,
-        delay: i * 0.18, ease: 'expo.out', force3D: true,
-      });
-    });
-
-    gsap.to('.contact-sub', {
-      scrollTrigger: { trigger: '.contact-sub', start: 'top 88%', toggleActions: 'play none none reverse' },
-      y: 0, opacity: 1, duration: 0.8, ease: 'power3.out',
-    });
-
-    gsap.to('.contact-link', {
-      scrollTrigger: { trigger: '.contact-link', start: 'top 90%', toggleActions: 'play none none reverse' },
-      y: 0, opacity: 1, duration: 0.8, delay: 0.2, ease: 'power3.out',
-    });
-
-    /* ── MARQUEE GSAP ────────────────────── */
-    const track = document.querySelector('.marquee-track');
-    if (track) {
-      const w = track.scrollWidth / 3;
-      gsap.to(track, {
-        x: -w, duration: 22, ease: 'none', repeat: -1,
-        modifiers: { x: gsap.utils.unitize(x => parseFloat(x) % w) }
-      });
-    }
-
-    /* ── TRANSITIONS DE SCÈNE scrubbed ───── */
-    document.querySelectorAll('.scene').forEach((scene, i) => {
-      if (i === 0) return;
-      gsap.fromTo(scene,
-        { opacity: 0.5, scale: 0.97 },
-        {
-          scrollTrigger: {
-            trigger: scene,
-            start: 'top 92%',
-            end: 'top 25%',
-            scrub: 1.2,
-          },
-          opacity: 1, scale: 1,
-          ease: 'none', force3D: true,
-        }
-      );
-    });
-
-    /* ─────────────────────────────────────────
-       8.  LIGHTBOX — galerie navigable
-    ───────────────────────────────────────── */
-    const lightbox = document.getElementById('lightbox');
-    const lbImg    = document.getElementById('lightbox-img');
-    const lbNum    = document.getElementById('lightbox-num');
-    const lbTitle  = document.getElementById('lightbox-title');
-    const lbDesc   = document.getElementById('lightbox-desc');
-    const lbClose  = document.querySelector('.lightbox-close');
-    const lbPrev   = document.querySelector('.lightbox-prev');
-    const lbNext   = document.querySelector('.lightbox-next');
+    /* ══════════════════════════════════════════════════
+       5. LIGHTBOX
+    ══════════════════════════════════════════════════ */
+    const lb      = document.getElementById('lightbox');
+    const lbImg   = document.getElementById('lightbox-img');
+    const lbNum   = document.getElementById('lightbox-num');
+    const lbTitle = document.getElementById('lightbox-title');
+    const lbDesc  = document.getElementById('lightbox-desc');
     const artworks = [...document.querySelectorAll('.artwork')];
-    let currentIdx = 0;
+    let current = 0;
 
-    function openLightbox(idx) {
-      const art  = artworks[idx];
-      const src  = art.querySelector('img').src;
-      const data = artworkData[idx] || {};
-      currentIdx = idx;
-      lbImg.src             = src;
-      lbNum.textContent     = data.num   || '';
-      lbTitle.textContent   = data.title || '';
-      lbDesc.textContent    = data.desc  || '';
-      gsap.set(lightbox, { display: 'flex' });
-      gsap.set(lbImg, { scale: 1.08, opacity: 0 });
-      gsap.to(lightbox, { opacity: 1, duration: 0.4, ease: 'power2.out' });
-      gsap.to(lbImg,    { scale: 1, opacity: 1, duration: 0.6, ease: 'expo.out' });
+    function openLb(i) {
+      const art = artworks[i]; current = i;
+      const data = ARTWORKS[parseInt(art.dataset.index)] || ARTWORKS[i] || {};
+      lbImg.src = art.querySelector('img').src;
+      lbNum.textContent   = data.num   || '';
+      lbTitle.textContent = data.title || '';
+      lbDesc.textContent  = data.desc  || '';
+      gsap.set(lb, { display:'flex' });
+      gsap.set(lbImg, { scale:1.1, opacity:0 });
+      gsap.to(lb,    { opacity:1, duration:0.4, ease:'power2.out' });
+      gsap.to(lbImg, { scale:1, opacity:1, duration:0.6, ease:'expo.out' });
       lenis.stop();
     }
-
-    function closeLightbox() {
-      gsap.to(lightbox, {
-        opacity: 0, duration: 0.35, ease: 'power2.in',
-        onComplete: () => { gsap.set(lightbox, { display: 'none' }); lenis.start(); }
+    function closeLb() {
+      gsap.to(lb, { opacity:0, duration:0.35, ease:'power2.in',
+        onComplete: () => { gsap.set(lb,{display:'none'}); lenis.start(); }
       });
     }
-
-    artworks.forEach((art, i) => art.addEventListener('click', () => openLightbox(i)));
-    if (lbClose) lbClose.addEventListener('click', closeLightbox);
-    if (lbPrev)  lbPrev.addEventListener('click', () => openLightbox((currentIdx - 1 + artworks.length) % artworks.length));
-    if (lbNext)  lbNext.addEventListener('click', () => openLightbox((currentIdx + 1) % artworks.length));
-    const lbOverlay = document.querySelector('.lightbox-overlay');
-    if (lbOverlay) lbOverlay.addEventListener('click', closeLightbox);
-
+    artworks.forEach((a,i) => a.addEventListener('click', ()=>openLb(i)));
+    document.querySelector('.lightbox-close').addEventListener('click', closeLb);
+    document.querySelector('.lightbox-prev').addEventListener('click', () => openLb((current-1+artworks.length)%artworks.length));
+    document.querySelector('.lightbox-next').addEventListener('click', () => openLb((current+1)%artworks.length));
+    document.querySelector('.lightbox-overlay').addEventListener('click', closeLb);
     document.addEventListener('keydown', e => {
-      if (!lightbox || lightbox.style.display === 'none') return;
-      if (e.key === 'Escape')      closeLightbox();
-      if (e.key === 'ArrowRight')  openLightbox((currentIdx + 1) % artworks.length);
-      if (e.key === 'ArrowLeft')   openLightbox((currentIdx - 1 + artworks.length) % artworks.length);
+      if (lb.style.display==='none'||!lb.style.display) return;
+      if(e.key==='Escape') closeLb();
+      if(e.key==='ArrowRight') openLb((current+1)%artworks.length);
+      if(e.key==='ArrowLeft')  openLb((current-1+artworks.length)%artworks.length);
     });
 
-    /* ── RESIZE ──────────────────────────── */
-    let resizeTimer;
+    /* ── Resize ──────────────────────────────────────── */
+    let resizeT;
     window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => ScrollTrigger.refresh(), 250);
+      clearTimeout(resizeT);
+      resizeT = setTimeout(() => {
+        document.body.style.height = (SCENES * SCENE_DEPTH + window.innerHeight) + 'px';
+        ScrollTrigger.refresh();
+      }, 250);
     });
 
-    ScrollTrigger.refresh();
-  } // end initAnimations
+  } // boot()
 
 });
