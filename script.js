@@ -1,4 +1,4 @@
-/* ===== KOCO. — SCRIPT CINÉMATIQUE v3 ===== */
+/* ===== KOCO. — SCRIPT CINÉMATIQUE v4 ===== */
 /* Loader + GSAP + ScrollTrigger + Lenis      */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -27,24 +27,25 @@ document.addEventListener('DOMContentLoaded', () => {
     '.about-image-frame', '.about-img',
     '.contact-bg-art img', '.marquee-track',
     '#navbar', '#loader'
-  ], { force3D: true, willChange: 'transform, opacity' });
+  ], { force3D: true });
 
   /* ─────────────────────────────────────────
      1.  LOADER CINÉMATIQUE
   ───────────────────────────────────────── */
-  const loader     = document.getElementById('loader');
-  const loaderBar  = loader.querySelector('.loader-bar');
+  const loader      = document.getElementById('loader');
+  const loaderBar   = loader.querySelector('.loader-bar');
   const loaderLetters = loader.querySelectorAll('.loader-text span');
   const loaderCounter = loader.querySelector('.loader-counter');
 
   // Counter animation
   let count = 0;
-  const counterTL = gsap.timeline();
-  counterTL.to(loaderCounter, { opacity: 1, duration: 0.3 });
-
+  gsap.to(loaderCounter, { opacity: 1, duration: 0.3 });
   const countInterval = setInterval(() => {
     count += Math.ceil(Math.random() * 15);
-    if (count >= 100) { count = 100; clearInterval(countInterval); }
+    if (count >= 100) {
+      count = 100;
+      clearInterval(countInterval);
+    }
     loaderCounter.textContent = String(count).padStart(3, '0');
   }, 60);
 
@@ -53,24 +54,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Lettres tombantes
   gsap.to(loaderLetters, {
-    y: 0, duration: 1, stagger: 0.07, ease: 'expo.out',
-    delay: 0.3, force3D: true
+    y: 0, duration: 1, stagger: 0.07,
+    ease: 'expo.out', delay: 0.3, force3D: true
   });
 
   // Exit du loader
-  const loaderExit = gsap.timeline({ delay: 2.5 });
+  const loaderExit = gsap.timeline({ delay: 2.4 });
   loaderExit
     .to(loaderLetters, {
-      y: '-110%', duration: 0.8, stagger: 0.04,
+      y: '-110%', duration: 0.7, stagger: 0.05,
       ease: 'expo.in', force3D: true
     })
-    .to(loaderCounter, { opacity: 0, duration: 0.3 }, '-=0.6')
+    .to(loaderCounter, { opacity: 0, duration: 0.3 }, '<')
     .to(loader, {
-      clipPath: 'inset(0 0 100% 0)',
-      duration: 0.9, ease: 'expo.inOut'
-    }, '-=0.2')
+      yPercent: -100, duration: 0.9,
+      ease: 'expo.inOut', force3D: true
+    }, '-=0.1')
     .set(loader, { display: 'none' })
-    .add(() => initAnimations(), '-=0.3');
+    .add(() => initAnimations(), '-=0.2');
 
   /* ─────────────────────────────────────────
      2.  INIT (après loader)
@@ -97,13 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ── CURSEUR MAGNÉTIQUE ──────────────── */
     const dot  = document.getElementById('cursor-dot');
     const ring = document.getElementById('cursor-ring');
-    const ringLabel = ring.querySelector('.cursor-label');
+    const ringLabel = ring ? ring.querySelector('.cursor-label') : null;
     let mx = 0, my = 0, rx = 0, ry = 0;
 
     document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
     gsap.ticker.add(() => {
-      gsap.set(dot, { x: mx, y: my });
+      if (!dot || !ring) return;
+      gsap.set(dot,  { x: mx, y: my });
       rx += (mx - rx) * 0.1;
       ry += (my - ry) * 0.1;
       gsap.set(ring, { x: rx, y: ry });
@@ -112,13 +114,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hover sur liens/boutons
     document.querySelectorAll('a, button').forEach(el => {
       el.addEventListener('mouseenter', () => {
-        gsap.to(ring, { width: 56, height: 56, borderColor: 'var(--c-gold)', duration: 0.35, ease: 'power2.out' });
-        gsap.to(dot, { scale: 0, duration: 0.2 });
+        gsap.to(ring, { width: 56, height: 56, duration: 0.35, ease: 'power2.out' });
+        gsap.to(dot,  { scale: 0, duration: 0.2 });
       });
       el.addEventListener('mouseleave', () => {
-        gsap.to(ring, { width: 36, height: 36, borderColor: 'var(--c-gold)', duration: 0.35, ease: 'power2.out' });
-        gsap.to(dot, { scale: 1, duration: 0.2 });
-        gsap.to(ringLabel, { opacity: 0, scale: 0.5, duration: 0.2 });
+        gsap.to(ring, { width: 36, height: 36, duration: 0.35, ease: 'power2.out' });
+        gsap.to(dot,  { scale: 1, duration: 0.2 });
+        if (ringLabel) gsap.to(ringLabel, { opacity: 0, scale: 0.5, duration: 0.2 });
       });
     });
 
@@ -126,13 +128,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.artwork').forEach(el => {
       el.addEventListener('mouseenter', () => {
         gsap.to(ring, { width: 72, height: 72, duration: 0.4, ease: 'back.out(2)' });
-        gsap.to(dot, { scale: 0, duration: 0.2 });
-        gsap.to(ringLabel, { opacity: 1, scale: 1, duration: 0.3 });
+        gsap.to(dot,  { scale: 0, duration: 0.2 });
+        if (ringLabel) gsap.to(ringLabel, { opacity: 1, scale: 1, duration: 0.3 });
       });
       el.addEventListener('mouseleave', () => {
         gsap.to(ring, { width: 36, height: 36, duration: 0.35, ease: 'power2.out' });
-        gsap.to(dot, { scale: 1, duration: 0.2 });
-        gsap.to(ringLabel, { opacity: 0, scale: 0.5, duration: 0.2 });
+        gsap.to(dot,  { scale: 1, duration: 0.2 });
+        if (ringLabel) gsap.to(ringLabel, { opacity: 0, scale: 0.5, duration: 0.2 });
       });
     });
 
@@ -174,29 +176,30 @@ document.addEventListener('DOMContentLoaded', () => {
       // Orbes
       .to('.hero-orb', { opacity: 1, duration: 1.2, stagger: 0.2 }, '-=1.2')
 
-      // Eyebrow line
-      .to('.eyebrow-line', { scaleX: 1, opacity: 1, duration: 0.6, ease: 'power3.out' }, '-=0.8')
-      .to('.eyebrow-text', { opacity: 1, duration: 0.5 }, '-=0.4')
+      // Eyebrow line + text
+      .to('.eyebrow-line', { scaleX: 1, opacity: 1, duration: 0.6 }, '-=0.6')
+      .to('.eyebrow-text', { opacity: 1, duration: 0.5 }, '-=0.3')
 
-      // Titre monumentale
-      .to('.title-inner', { y: 0, duration: 1.0, stagger: 0.12 }, '-=0.5')
+      // Titre
+      .to('.title-inner', { y: 0, duration: 1.0, stagger: 0.12 }, '-=0.4')
       .to('.title-period', { y: 0, duration: 0.8 }, '-=0.5')
 
-      // Meta items
-      .to(['.meta-item', '.meta-dot'], { y: 0, opacity: 1, duration: 0.7, stagger: 0.06 }, '-=0.4')
-      .to('.hero-sub', { y: 0, opacity: 1, duration: 0.6 }, '-=0.3')
+      // Meta + sous-titre
+      .to('.meta-item', { y: 0, opacity: 1, duration: 0.7, stagger: 0.07 }, '-=0.4')
+      .to('.meta-dot',  { opacity: 1, duration: 0.4, stagger: 0.07 }, '<')
+      .to('.hero-sub',  { y: 0, opacity: 1, duration: 0.6 }, '-=0.3')
 
       // Miniatures flottantes
-      .to('.float-1', { opacity: 1, y: 0, duration: 0.8, ease: 'back.out(1.3)' }, '-=0.4')
-      .to('.float-2', { opacity: 1, y: 0, duration: 0.8, delay: 0.1, ease: 'back.out(1.3)' }, '<')
-      .to('.float-3', { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: 'back.out(1.3)' }, '<')
+      .to('.float-1', { opacity: 1, y: 0, duration: 0.9, ease: 'back.out(1.3)' }, '-=0.5')
+      .to('.float-2', { opacity: 1, y: 0, duration: 0.9, delay: 0.12, ease: 'back.out(1.3)' }, '<')
+      .to('.float-3', { opacity: 1, y: 0, duration: 0.9, delay: 0.24, ease: 'back.out(1.3)' }, '<')
 
-      // Numéro et scroll hint
-      .to('.scene-number', { opacity: 1, duration: 0.5 }, '-=0.3')
-      .to('.scroll-hint', { opacity: 1, duration: 0.5 }, '-=0.3');
+      // Éléments UI
+      .to('.scene-number', { opacity: 1, duration: 0.5 }, '-=0.4')
+      .to('.scroll-hint',  { opacity: 1, duration: 0.5 }, '-=0.4');
 
     // Préparer les floats
-    gsap.set(['.float-1','.float-2','.float-3'], { y: 30 });
+    gsap.set(['.float-1','.float-2','.float-3'], { y: 40, force3D: true });
 
     /* Parallaxe hero au scroll */
     ScrollTrigger.create({
@@ -206,17 +209,18 @@ document.addEventListener('DOMContentLoaded', () => {
       scrub: 1.5,
       onUpdate: self => {
         const p = self.progress;
-        gsap.set('.hero-img-bg img', { y: p * 150, scale: 1 + p * 0.05 });
-        gsap.set('.hero-content', { y: p * 80 });
-        gsap.set('.hero-orb', { y: p * -60 });
-        gsap.set('.float-1', { y: 30 + p * -120 });
-        gsap.set('.float-2', { y: 0  + p * -90  });
-        gsap.set('.float-3', { y: 0  + p * -60  });
+        gsap.set('.hero-img-bg img', { y: p * 150, scale: 1 + p * 0.05, force3D: true });
+        gsap.set('.hero-content',    { y: p * 80, force3D: true });
+        gsap.set('.orb-1',           { y: p * -80, force3D: true });
+        gsap.set('.orb-2',           { y: p * -50, force3D: true });
+        gsap.set('.float-1',         { y: 40 + p * -130, force3D: true });
+        gsap.set('.float-2',         { y: 0  + p * -100, force3D: true });
+        gsap.set('.float-3',         { y: 0  + p * -70,  force3D: true });
       }
     });
 
     /* ─────────────────────────────────────────
-       4.  SECTION HEADERS — slide + line grow
+       4.  SECTION HEADERS
     ───────────────────────────────────────── */
     document.querySelectorAll('.section-header').forEach(header => {
       const num   = header.querySelector('.section-num');
@@ -234,8 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
         once: true,
         onEnter: () => {
           const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-          tl.to(num,   { y: 0, opacity: 1, duration: 0.6 })
-            .to(title, { y: 0, opacity: 1, duration: 0.7 }, '-=0.4')
+          tl.to(num,   { y: 0, opacity: 1, duration: 0.7 })
+            .to(title, { y: 0, opacity: 1, duration: 0.7 }, '-=0.5')
             .to(line,  { scaleX: 1, duration: 1.2, ease: 'power3.out' }, '-=0.5');
           if (count) tl.to(count, { opacity: 1, duration: 0.4 }, '-=0.3');
         }
@@ -246,39 +250,35 @@ document.addEventListener('DOMContentLoaded', () => {
        5.  GALERIE — entrées scrubbed + parallaxe
     ───────────────────────────────────────── */
     document.querySelectorAll('.artwork').forEach((art, i) => {
-      const img  = art.querySelector('.artwork-img-wrap img');
-      const cap  = art.querySelector('.artwork-caption');
-      const wrap = art.querySelector('.artwork-img-wrap');
+      const img = art.querySelector('.artwork-img-wrap img');
+      const cap = art.querySelector('.artwork-caption');
 
-      // Entrance depuis le bas
+      // Entrance scrub depuis le bas
       gsap.from(art, {
         scrollTrigger: {
           trigger: art,
-          start: 'top 90%',
-          end: 'top 55%',
+          start: 'top 92%',
+          end: 'top 52%',
           scrub: 0.8,
         },
-        y: 80,
-        opacity: 0,
-        scale: 0.97,
-        ease: 'none',
-        force3D: true,
+        y: 80, opacity: 0, scale: 0.97,
+        ease: 'none', force3D: true,
       });
 
       // Parallaxe image dans le cadre
-      gsap.to(img, {
-        scrollTrigger: {
-          trigger: art,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1.2,
-        },
-        y: -60,
-        ease: 'none',
-        force3D: true,
-      });
+      if (img) {
+        gsap.to(img, {
+          scrollTrigger: {
+            trigger: art,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1.2,
+          },
+          y: -60, ease: 'none', force3D: true,
+        });
+      }
 
-      // Caption slide up
+      // Caption slide-up
       if (cap) {
         gsap.from(cap, {
           scrollTrigger: {
@@ -286,53 +286,48 @@ document.addEventListener('DOMContentLoaded', () => {
             start: 'top 85%',
             toggleActions: 'play none none reverse'
           },
-          y: 20,
-          opacity: 0,
-          duration: 0.6,
-          delay: 0.15 * (i % 3),
-          ease: 'power3.out',
+          y: 20, opacity: 0, duration: 0.6,
+          delay: 0.15 * (i % 3), ease: 'power3.out',
         });
       }
     });
 
     /* ─────────────────────────────────────────
-       6.  À PROPOS — image parallaxe + texte
+       6.  À PROPOS — image + texte masqué
     ───────────────────────────────────────── */
     const aboutSection = document.getElementById('about');
-    const aboutImg = document.querySelector('.about-image-frame');
+    const aboutFrame   = document.querySelector('.about-image-frame');
 
-    // Image parallaxe
-    gsap.to(aboutImg, {
-      scrollTrigger: {
-        trigger: aboutSection,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1.8,
-      },
-      y: -80,
-      ease: 'none',
-      force3D: true,
-    });
+    // Image parallaxe (frame entière)
+    if (aboutFrame) {
+      gsap.to(aboutFrame, {
+        scrollTrigger: {
+          trigger: aboutSection,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1.8,
+        },
+        y: -80, ease: 'none', force3D: true,
+      });
+    }
 
-    // Titre about — mots masqués
+    // Titre about — wrapping manuel
     document.querySelectorAll('.about-title-line').forEach((line, i) => {
       const inner = document.createElement('span');
       inner.className = 'inner-word';
       inner.innerHTML = line.innerHTML;
       line.innerHTML = '';
       line.appendChild(inner);
+      gsap.set(inner, { y: '110%', force3D: true });
 
-      gsap.from(inner, {
+      gsap.to(inner, {
         scrollTrigger: {
-          trigger: line,
-          start: 'top 88%',
+          trigger: '.about-title',
+          start: 'top 82%',
           toggleActions: 'play none none reverse'
         },
-        y: '110%',
-        duration: 0.9,
-        delay: i * 0.12,
-        ease: 'expo.out',
-        force3D: true,
+        y: 0, duration: 0.9, delay: i * 0.12,
+        ease: 'expo.out', force3D: true,
       });
     });
 
@@ -354,47 +349,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Tags
     gsap.to('.about-tags span', {
-      scrollTrigger: { trigger: '.about-tags', start: 'top 88%', toggleActions: 'play none none reverse' },
+      scrollTrigger: { trigger: '.about-tags', start: 'top 90%', toggleActions: 'play none none reverse' },
       y: 0, opacity: 1, duration: 0.5,
       stagger: 0.07, ease: 'back.out(1.5)',
     });
 
     /* ─────────────────────────────────────────
-       7.  CONTACT — titre masqué + fond parallaxe
+       7.  CONTACT — titre masqué + parallaxe
     ───────────────────────────────────────── */
-    // Contact background parallaxe
-    gsap.to('.contact-bg-art img', {
-      scrollTrigger: {
-        trigger: '#contact',
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 2,
-      },
-      y: -100,
-      scale: 1.15,
-      ease: 'none',
-      force3D: true,
-    });
+    const contactBg = document.querySelector('.contact-bg-art img');
+    if (contactBg) {
+      gsap.to(contactBg, {
+        scrollTrigger: {
+          trigger: '#contact',
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 2,
+        },
+        y: -100, scale: 1.15,
+        ease: 'none', force3D: true,
+      });
+    }
 
-    // Titre contact — lignes masquées
+    // Titre contact lignes masquées
     document.querySelectorAll('.ct-line').forEach((line, i) => {
       const inner = document.createElement('span');
       inner.className = 'inner-word';
       inner.innerHTML = line.innerHTML;
       line.innerHTML = '';
       line.appendChild(inner);
+      gsap.set(inner, { y: '110%', force3D: true });
 
-      gsap.from(inner, {
+      gsap.to(inner, {
         scrollTrigger: {
-          trigger: '#contact',
-          start: 'top 80%',
+          trigger: '.contact-title',
+          start: 'top 82%',
           toggleActions: 'play none none reverse'
         },
-        y: '110%',
-        duration: 1.1,
-        delay: i * 0.18,
-        ease: 'expo.out',
-        force3D: true,
+        y: 0, duration: 1.1,
+        delay: i * 0.18, ease: 'expo.out', force3D: true,
       });
     });
 
@@ -413,30 +406,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (track) {
       const w = track.scrollWidth / 3;
       gsap.to(track, {
-        x: -w,
-        duration: 22,
-        ease: 'none',
-        repeat: -1,
+        x: -w, duration: 22, ease: 'none', repeat: -1,
         modifiers: { x: gsap.utils.unitize(x => parseFloat(x) % w) }
       });
     }
 
-    /* ── TRANSITIONS DE SCÈNE (zoom entrée) ── */
+    /* ── TRANSITIONS DE SCÈNE scrubbed ───── */
     document.querySelectorAll('.scene').forEach((scene, i) => {
       if (i === 0) return;
       gsap.fromTo(scene,
-        { opacity: 0.6, scale: 0.97 },
+        { opacity: 0.5, scale: 0.97 },
         {
           scrollTrigger: {
             trigger: scene,
-            start: 'top 90%',
-            end: 'top 30%',
+            start: 'top 92%',
+            end: 'top 25%',
             scrub: 1.2,
           },
-          opacity: 1,
-          scale: 1,
-          ease: 'none',
-          force3D: true,
+          opacity: 1, scale: 1,
+          ease: 'none', force3D: true,
         }
       );
     });
@@ -444,28 +432,26 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ─────────────────────────────────────────
        8.  LIGHTBOX — galerie navigable
     ───────────────────────────────────────── */
-    const lightbox  = document.getElementById('lightbox');
-    const lbImg     = document.getElementById('lightbox-img');
-    const lbNum     = document.getElementById('lightbox-num');
-    const lbTitle   = document.getElementById('lightbox-title');
-    const lbDesc    = document.getElementById('lightbox-desc');
-    const lbClose   = document.querySelector('.lightbox-close');
-    const lbPrev    = document.querySelector('.lightbox-prev');
-    const lbNext    = document.querySelector('.lightbox-next');
-    const artworks  = [...document.querySelectorAll('.artwork')];
-    let currentIdx  = 0;
+    const lightbox = document.getElementById('lightbox');
+    const lbImg    = document.getElementById('lightbox-img');
+    const lbNum    = document.getElementById('lightbox-num');
+    const lbTitle  = document.getElementById('lightbox-title');
+    const lbDesc   = document.getElementById('lightbox-desc');
+    const lbClose  = document.querySelector('.lightbox-close');
+    const lbPrev   = document.querySelector('.lightbox-prev');
+    const lbNext   = document.querySelector('.lightbox-next');
+    const artworks = [...document.querySelectorAll('.artwork')];
+    let currentIdx = 0;
 
     function openLightbox(idx) {
       const art  = artworks[idx];
       const src  = art.querySelector('img').src;
       const data = artworkData[idx] || {};
       currentIdx = idx;
-
-      lbImg.src       = src;
-      lbNum.textContent   = data.num   || '';
-      lbTitle.textContent = data.title || '';
-      lbDesc.textContent  = data.desc  || '';
-
+      lbImg.src             = src;
+      lbNum.textContent     = data.num   || '';
+      lbTitle.textContent   = data.title || '';
+      lbDesc.textContent    = data.desc  || '';
       gsap.set(lightbox, { display: 'flex' });
       gsap.set(lbImg, { scale: 1.08, opacity: 0 });
       gsap.to(lightbox, { opacity: 1, duration: 0.4, ease: 'power2.out' });
@@ -480,32 +466,28 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    artworks.forEach((art, i) => {
-      art.addEventListener('click', () => openLightbox(i));
-    });
+    artworks.forEach((art, i) => art.addEventListener('click', () => openLightbox(i)));
+    if (lbClose) lbClose.addEventListener('click', closeLightbox);
+    if (lbPrev)  lbPrev.addEventListener('click', () => openLightbox((currentIdx - 1 + artworks.length) % artworks.length));
+    if (lbNext)  lbNext.addEventListener('click', () => openLightbox((currentIdx + 1) % artworks.length));
+    const lbOverlay = document.querySelector('.lightbox-overlay');
+    if (lbOverlay) lbOverlay.addEventListener('click', closeLightbox);
 
-    lbClose.addEventListener('click', closeLightbox);
-    lbPrev.addEventListener('click', () => openLightbox((currentIdx - 1 + artworks.length) % artworks.length));
-    lbNext.addEventListener('click', () => openLightbox((currentIdx + 1) % artworks.length));
-    document.querySelector('.lightbox-overlay').addEventListener('click', closeLightbox);
-
-    // Navigation clavier
     document.addEventListener('keydown', e => {
-      if (!lightbox.style.display || lightbox.style.display === 'none') return;
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowRight') openLightbox((currentIdx + 1) % artworks.length);
-      if (e.key === 'ArrowLeft')  openLightbox((currentIdx - 1 + artworks.length) % artworks.length);
+      if (!lightbox || lightbox.style.display === 'none') return;
+      if (e.key === 'Escape')      closeLightbox();
+      if (e.key === 'ArrowRight')  openLightbox((currentIdx + 1) % artworks.length);
+      if (e.key === 'ArrowLeft')   openLightbox((currentIdx - 1 + artworks.length) % artworks.length);
     });
 
-    /* ─────────────────────────────────────────
-       9.  RESIZE debounced
-    ───────────────────────────────────────── */
+    /* ── RESIZE ──────────────────────────── */
     let resizeTimer;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => ScrollTrigger.refresh(), 250);
     });
 
+    ScrollTrigger.refresh();
   } // end initAnimations
 
 });
