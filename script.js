@@ -63,24 +63,31 @@ document.addEventListener('DOMContentLoaded', () => {
   function boot() {
 
     /* ── Lenis : scroll natif → virtuel ────────────── */
-    const lenis = new Lenis({
-      duration: 2.0,
-      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smooth: true,
-      smoothTouch: false,
-    });
-    gsap.ticker.add(time => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
-    lenis.on('scroll', ScrollTrigger.update);
+    // Pure lerp scroll — Lenis v1.0.42 transforme body inline ce qui casse position:fixed
+    // On utilise du lerp natif GSAP qui ne touche pas au DOM
+    let scrollY = 0, scrollYTarget = 0;
+    window.addEventListener('wheel', e => {
+      e.preventDefault();
+      scrollYTarget = Math.max(0, Math.min(scrollYTarget + e.deltaY * 1.3, SCENES * SCENE_DEPTH));
+    }, { passive: false });
+    let touchY0 = 0;
+    window.addEventListener('touchstart', e => { touchY0 = e.touches[0].clientY; }, {passive:true});
+    window.addEventListener('touchmove', e => {
+      const dy = (touchY0 - e.touches[0].clientY) * 2;
+      scrollYTarget = Math.max(0, Math.min(scrollYTarget + dy, SCENES * SCENE_DEPTH));
+      touchY0 = e.touches[0].clientY;
+    }, {passive:true});
+    const lenis = { stop:()=>{}, start:()=>{}, on:()=>{},
+      scrollTo: (t) => { scrollYTarget = typeof t === 'number' ? t : (t&&t.offsetTop||0); }
+    };
+
+
 
     /* ── Hauteur du body (driver invisible) ─────────── */
     document.body.style.height = (SCENES * SCENE_DEPTH + window.innerHeight) + 'px';
 
     /* ── Progress bar ───────────────────────────────── */
     const progressFill = document.getElementById('progress-fill');
-    lenis.on('scroll', ({ progress }) => {
-      gsap.set(progressFill, { width: (progress * 100) + '%' });
-    });
 
     /* ── Curseur magnétique ─────────────────────────── */
     const dot  = document.getElementById('cursor-dot');
@@ -209,16 +216,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const sceneEntered = { gallery:false, about:false, contact:false };
 
-    lenis.on('scroll', ({ scroll }) => {
+    /* ── RAF SCROLL LOOP (pas de Lenis transform) ─────── */
+    function handleScroll(scroll) {
       const totalMax = SCENES * SCENE_DEPTH;
-      const gp = scroll / totalMax; // progress global 0→1
       const rawScene = scroll / SCENE_DEPTH;
       const newScene = Math.min(Math.floor(rawScene), SCENES-1);
 
-      /* Mise à jour progress bar */
-      gsap.set(progressFill, { width: (gp * 100) + '%' });
-
-      /* ── Logique de transition par scène ─────────── */
       ranges.forEach((range, i) => {
         const el = scenes[range.id];
         if (!el) return;
@@ -226,62 +229,62 @@ document.addEventListener('DOMContentLoaded', () => {
         const p = localP(scroll, range);
 
         if (i === 0) {
-          // HERO : sort vers le bas quand on scroll
           if (p < 0.7) {
-            // reste visible
-            gsap.set(el, { opacity: 1, scale: 1, filter: 'blur(0px)' });
-            // parallaxe fond
+            el.style.opacity = '1';
             gsap.set('.s-hero-bg img', { y: scroll * 0.25 });
             gsap.set('.s-hero-content', { y: scroll * 0.15, opacity: 1 });
             gsap.set('.float-1', { y: 40 - scroll * 0.18 });
             gsap.set('.float-2', { y: 0  - scroll * 0.13 });
             gsap.set('.float-3', { y: 0  - scroll * 0.10 });
           } else {
-            // sort
             const exitP = (p - 0.7) / 0.3;
-            sceneOut(el, exitP);
-            gsap.set('.s-hero-content', { y: scroll * 0.15, opacity: gsap.utils.interpolate(1, 0, exitP) });
+            el.style.opacity = String(Math.max(0, 1 - exitP));
+            gsap.set('.s-hero-content', { y: scroll * 0.15, opacity: Math.max(0, 1 - exitP) });
           }
         } else {
-          // Autres scènes
           const prevRange = ranges[i-1];
           const transP = localP(scroll, {
-            start: prevRange.end - SCENE_DEPTH * 0.35,
-            end:   prevRange.end + SCENE_DEPTH * 0.15,
+            start: prevRange.end - SCENE_DEPTH * 0.5,
+            end:   prevRange.end + SCENE_DEPTH * 0.3,
           });
           const outP = (i < SCENES-1) ? localP(scroll, {
-            start: range.end - SCENE_DEPTH * 0.3,
+            start: range.end - SCENE_DEPTH * 0.4,
             end:   range.end,
           }) : 0;
 
           if (transP <= 0) {
-            gsap.set(el, { opacity:0, scale:1.06, filter:'blur(8px)' });
+            el.style.opacity = '0';
           } else if (outP > 0 && i < SCENES-1) {
-            // sortie
-            sceneOut(el, outP);
+            el.style.opacity = String(Math.max(0, 1 - outP));
           } else {
-            // entrée / visible
-            sceneIn(el, transP);
-            el.classList.add('is-active');
-
-            // Déclencher anim interne une seule fois
-            const key = range.id;
-            if (!sceneEntered[key] && transP > 0.4 && sceneEnterFns[key]) {
-              sceneEntered[key] = true;
-              sceneEnterFns[key]();
+            el.style.opacity = String(Math.min(1, transP));
+            if (!sceneEntered[range.id] && transP > 0.5 && sceneEnterFns[range.id]) {
+              sceneEntered[range.id] = true;
+              sceneEnterFns[range.id]();
             }
           }
         }
       });
 
-      /* Parallaxe images galerie sur le scroll interne */
+      // Parallaxe galerie
       if (rawScene >= 1 && rawScene < 2) {
         const gScroll = scroll - SCENE_DEPTH;
-        document.querySelectorAll('.artwork-img-wrap').forEach((w, i) => {
+        [...document.querySelectorAll('.artwork-img-wrap')].forEach((w, i) => {
           gsap.set(w.querySelector('img'), { y: gScroll * 0.04 * (i%2===0?1:-0.7) });
         });
       }
-    });
+    }
+
+    // RAF loop: lerp scroll + appel handler
+    function rafLoop() {
+      scrollY += (scrollYTarget - scrollY) * 0.08;
+      if (Math.abs(scrollYTarget - scrollY) < 0.05) scrollY = scrollYTarget;
+      const progress = scrollY / (SCENES * SCENE_DEPTH);
+      if (progressFill) progressFill.style.width = (progress * 100) + '%';
+      handleScroll(scrollY);
+      requestAnimationFrame(rafLoop);
+    }
+    requestAnimationFrame(rafLoop);
 
     /* ══════════════════════════════════════════════════
        4. ANIMATIONS INTERNES PAR SCÈNE
