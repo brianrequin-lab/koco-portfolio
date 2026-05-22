@@ -7,6 +7,11 @@
 document.addEventListener('DOMContentLoaded', () => {
   gsap.registerPlugin(ScrollTrigger);
 
+  // Fix: remove will-change from html/body to preserve position:fixed
+  document.documentElement.style.setProperty('will-change', 'auto', 'important');
+  document.body.style.setProperty('will-change', 'auto', 'important');
+
+
   /* ─── Config scènes ─────────────────────────────── */
   const SCENES      = 4;
   const SCENE_DEPTH = 1200; // px de scroll par scène
@@ -23,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   /* ─── GPU bootstrap ─────────────────────────────── */
-  gsap.set('*', { force3D: true });
+  /* gsap.set('*') removed — breaks position:fixed via will-change on body */
 
   /* ══════════════════════════════════════════════════
      1. LOADER
