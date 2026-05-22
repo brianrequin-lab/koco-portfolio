@@ -13,20 +13,20 @@
   <!-- LOADER -->
   <div id="loader">
     <div class="loader-bar"></div>
-    <div class="loader-text"><span>K</span><span>O</span><span>C</span><span>O</span><span>.</span></div>
+    <div class="loader-text">
+      <span>K</span><span>O</span><span>C</span><span>O</span><span>.</span>
+    </div>
     <div class="loader-counter">000</div>
   </div>
 
   <!-- CURSOR -->
   <div id="cursor-dot"></div>
-  <div id="cursor-ring">
-    <div class="cursor-label">VOIR</div>
-  </div>
+  <div id="cursor-ring"><div class="cursor-label">VOIR</div></div>
 
   <!-- PROGRESS -->
   <div id="progress-bar"><div id="progress-fill"></div></div>
 
-  <!-- NAV -->
+  <!-- NAV (fixed, par-dessus tout) -->
   <nav id="navbar">
     <div class="nav-logo">KOCO<span class="logo-dot">.</span></div>
     <div class="nav-center">
@@ -35,48 +35,39 @@
       <span class="nav-tag">2025</span>
     </div>
     <ul class="nav-links">
-      <li><a href="#oeuvres">Œuvres</a></li>
-      <li><a href="#about">À propos</a></li>
-      <li><a href="#contact">Contact</a></li>
+      <li><a href="#" data-scene="0">Héros</a></li>
+      <li><a href="#" data-scene="1">Œuvres</a></li>
+      <li><a href="#" data-scene="2">À propos</a></li>
+      <li><a href="#" data-scene="3">Contact</a></li>
     </ul>
   </nav>
 
-  <!-- ========================================
-       HERO — galerie immersive plein écran
-  ======================================== -->
-  <section id="hero" class="scene">
+  <!-- ═══════════════════════════════════════════
+       SCÈNE 0 — HERO
+  ═══════════════════════════════════════════ -->
+  <div id="scene-hero" class="scene">
 
-    <!-- Rideau d'entrée -->
-    <div class="hero-curtain left"></div>
-    <div class="hero-curtain right"></div>
-
-    <!-- Fond grain + gradient -->
-    <div class="hero-bg">
-      <div class="hero-noise"></div>
-      <div class="hero-orb orb-1"></div>
-      <div class="hero-orb orb-2"></div>
-      <div class="hero-orb orb-3"></div>
-    </div>
-
-    <!-- Image héros en arrière-plan -->
-    <div class="hero-img-bg" aria-hidden="true">
+    <!-- Fond plein écran -->
+    <div class="s-hero-bg">
       <img src="painting-1.jpg" alt="">
     </div>
 
-    <!-- Contenu textuel -->
-    <div class="hero-content">
+    <!-- Miniatures flottantes -->
+    <div class="s-hero-floats" aria-hidden="true">
+      <div class="float-item float-1"><img src="painting-2.jpg" alt=""></div>
+      <div class="float-item float-2"><img src="painting-4.jpg" alt=""></div>
+      <div class="float-item float-3"><img src="painting-6.jpg" alt=""></div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="s-hero-content">
       <div class="hero-eyebrow">
         <span class="eyebrow-line"></span>
         <span class="eyebrow-text">Expressionnisme Brut</span>
       </div>
-
       <h1 class="hero-title" aria-label="KOCO.">
-        <span class="title-line">
-          <span class="title-mask"><span class="title-inner">KO</span></span><span class="title-mask title-italic"><span class="title-inner">CO</span></span>
-        </span>
-        <span class="title-period">.</span>
+        <span class="title-mask"><span class="title-inner">KO</span></span><span class="title-mask t-italic"><span class="title-inner">CO</span></span><span class="title-period">.</span>
       </h1>
-
       <div class="hero-meta">
         <span class="meta-item">Peinture</span>
         <span class="meta-dot"></span>
@@ -84,240 +75,191 @@
         <span class="meta-dot"></span>
         <span class="meta-item">Spray</span>
       </div>
-
       <p class="hero-sub">Peintre autodidacte basé à Lyon</p>
     </div>
 
-    <!-- Numéro de scène -->
     <div class="scene-number">01 / 04</div>
 
-    <!-- Miniatures flottantes -->
-    <div class="hero-floats" aria-hidden="true">
-      <div class="float-item float-1"><img src="painting-2.jpg" alt=""></div>
-      <div class="float-item float-2"><img src="painting-4.jpg" alt=""></div>
-      <div class="float-item float-3"><img src="painting-6.jpg" alt=""></div>
-    </div>
-
-    <!-- Scroll indicator -->
     <div class="scroll-hint">
       <div class="scroll-track"><div class="scroll-thumb"></div></div>
       <span class="scroll-label">Défiler</span>
     </div>
 
-  </section>
+  </div><!-- /scene-hero -->
 
-  <!-- ========================================
-       GALERIE — disposition éditoriale
-  ======================================== -->
-  <section id="oeuvres" class="scene">
+  <!-- ═══════════════════════════════════════════
+       SCÈNE 1 — GALERIE
+  ═══════════════════════════════════════════ -->
+  <div id="scene-gallery" class="scene">
 
-    <div class="section-header">
-      <div class="section-num">01</div>
-      <h2 class="section-title">Œuvres</h2>
-      <div class="section-line"></div>
-      <span class="section-count">07 pièces</span>
+    <div class="gallery-label">
+      <div class="gl-num">01</div>
+      <div class="gl-title">Œuvres</div>
+      <div class="gl-line"></div>
+      <div class="gl-count">07 pièces</div>
     </div>
 
-    <!-- Ligne 1 : grande + petite -->
-    <div class="gallery-row row-1">
-      <article class="artwork art-large" data-index="1">
-        <div class="artwork-img-wrap">
-          <img src="painting-1.jpg" alt="Sans titre 01" loading="lazy">
+    <div class="gallery-stage">
+
+      <!-- Ligne 1 -->
+      <div class="gallery-row row-1">
+        <article class="artwork" data-index="0">
+          <div class="artwork-img-wrap"><img src="painting-1.jpg" alt="Sans titre 01" loading="lazy"></div>
           <div class="artwork-overlay-info">
             <span class="overlay-num">01</span>
             <span class="overlay-title">Sans titre 01</span>
           </div>
-        </div>
-        <div class="artwork-caption">
-          <span class="caption-num">01</span>
-          <div class="caption-text">
-            <h3>Sans titre 01</h3>
-            <p>Acrylique sur toile — 2025</p>
+          <div class="artwork-caption">
+            <span class="caption-num">01</span>
+            <div class="caption-text"><h3>Sans titre 01</h3><p>Acrylique sur toile — 2025</p></div>
+            <span class="caption-arrow">→</span>
           </div>
-          <span class="caption-arrow">→</span>
-        </div>
-      </article>
-
-      <article class="artwork art-small" data-index="2">
-        <div class="artwork-img-wrap">
-          <img src="painting-2.jpg" alt="Sans titre 02" loading="lazy">
+        </article>
+        <article class="artwork" data-index="1">
+          <div class="artwork-img-wrap"><img src="painting-2.jpg" alt="Sans titre 02" loading="lazy"></div>
           <div class="artwork-overlay-info">
             <span class="overlay-num">02</span>
             <span class="overlay-title">Sans titre 02</span>
           </div>
-        </div>
-        <div class="artwork-caption">
-          <span class="caption-num">02</span>
-          <div class="caption-text">
-            <h3>Sans titre 02</h3>
-            <p>Acrylique et spray sur toile — 2025</p>
+          <div class="artwork-caption">
+            <span class="caption-num">02</span>
+            <div class="caption-text"><h3>Sans titre 02</h3><p>Acrylique et spray — 2025</p></div>
+            <span class="caption-arrow">→</span>
           </div>
-          <span class="caption-arrow">→</span>
-        </div>
-      </article>
-    </div>
-
-    <!-- Ligne 2 : bento 3 colonnes -->
-    <div class="gallery-row row-2">
-      <article class="artwork art-portrait" data-index="3">
-        <div class="artwork-img-wrap">
-          <img src="painting-3.jpg" alt="Sans titre 03" loading="lazy">
-          <div class="artwork-overlay-info">
-            <span class="overlay-num">03</span>
-            <span class="overlay-title">Sans titre 03</span>
-          </div>
-        </div>
-        <div class="artwork-caption">
-          <span class="caption-num">03</span>
-          <div class="caption-text"><h3>Sans titre 03</h3><p>Acrylique sur toile — 2025</p></div>
-          <span class="caption-arrow">→</span>
-        </div>
-      </article>
-
-      <article class="artwork art-wide" data-index="4">
-        <div class="artwork-img-wrap">
-          <img src="painting-4.jpg" alt="Sans titre 04" loading="lazy">
-          <div class="artwork-overlay-info">
-            <span class="overlay-num">04</span>
-            <span class="overlay-title">Sans titre 04</span>
-          </div>
-        </div>
-        <div class="artwork-caption">
-          <span class="caption-num">04</span>
-          <div class="caption-text"><h3>Sans titre 04</h3><p>Acrylique sur toile — 2025</p></div>
-          <span class="caption-arrow">→</span>
-        </div>
-      </article>
-
-      <article class="artwork art-portrait" data-index="5">
-        <div class="artwork-img-wrap">
-          <img src="painting-5.jpg" alt="Sans titre 05" loading="lazy">
-          <div class="artwork-overlay-info">
-            <span class="overlay-num">05</span>
-            <span class="overlay-title">Sans titre 05</span>
-          </div>
-        </div>
-        <div class="artwork-caption">
-          <span class="caption-num">05</span>
-          <div class="caption-text"><h3>Sans titre 05</h3><p>Acrylique et stylo — 2025</p></div>
-          <span class="caption-arrow">→</span>
-        </div>
-      </article>
-    </div>
-
-    <!-- Ligne 3 : deux colonnes égales -->
-    <div class="gallery-row row-3">
-      <article class="artwork art-half" data-index="6">
-        <div class="artwork-img-wrap">
-          <img src="painting-6.jpg" alt="Sans titre 06" loading="lazy">
-          <div class="artwork-overlay-info">
-            <span class="overlay-num">06</span>
-            <span class="overlay-title">Sans titre 06</span>
-          </div>
-        </div>
-        <div class="artwork-caption">
-          <span class="caption-num">06</span>
-          <div class="caption-text"><h3>Sans titre 06</h3><p>Acrylique et spray — 2025</p></div>
-          <span class="caption-arrow">→</span>
-        </div>
-      </article>
-
-      <article class="artwork art-half" data-index="7">
-        <div class="artwork-img-wrap">
-          <img src="painting-7.jpg" alt="Sans titre 07" loading="lazy">
-          <div class="artwork-overlay-info">
-            <span class="overlay-num">07</span>
-            <span class="overlay-title">Sans titre 07</span>
-          </div>
-        </div>
-        <div class="artwork-caption">
-          <span class="caption-num">07</span>
-          <div class="caption-text"><h3>Sans titre 07</h3><p>Acrylique sur toile — 2025</p></div>
-          <span class="caption-arrow">→</span>
-        </div>
-      </article>
-    </div>
-
-  </section>
-
-  <!-- ========================================
-       À PROPOS — texte immersif + image
-  ======================================== -->
-  <section id="about" class="scene">
-
-    <div class="section-header">
-      <div class="section-num">02</div>
-      <h2 class="section-title">À propos</h2>
-      <div class="section-line"></div>
-    </div>
-
-    <div class="about-layout">
-      <div class="about-left">
-        <div class="about-image-frame">
-          <img src="painting-3.jpg" alt="Œuvre de Koco" class="about-img">
-          <div class="about-img-border"></div>
-          <div class="about-img-year">2025</div>
-        </div>
+        </article>
       </div>
 
+      <!-- Ligne 2 -->
+      <div class="gallery-row row-2">
+        <article class="artwork" data-index="2">
+          <div class="artwork-img-wrap"><img src="painting-3.jpg" alt="Sans titre 03" loading="lazy"></div>
+          <div class="artwork-overlay-info">
+            <span class="overlay-num">03</span><span class="overlay-title">Sans titre 03</span>
+          </div>
+          <div class="artwork-caption">
+            <span class="caption-num">03</span>
+            <div class="caption-text"><h3>Sans titre 03</h3><p>Acrylique sur toile — 2025</p></div>
+            <span class="caption-arrow">→</span>
+          </div>
+        </article>
+        <article class="artwork" data-index="3">
+          <div class="artwork-img-wrap"><img src="painting-4.jpg" alt="Sans titre 04" loading="lazy"></div>
+          <div class="artwork-overlay-info">
+            <span class="overlay-num">04</span><span class="overlay-title">Sans titre 04</span>
+          </div>
+          <div class="artwork-caption">
+            <span class="caption-num">04</span>
+            <div class="caption-text"><h3>Sans titre 04</h3><p>Acrylique sur toile — 2025</p></div>
+            <span class="caption-arrow">→</span>
+          </div>
+        </article>
+        <article class="artwork" data-index="4">
+          <div class="artwork-img-wrap"><img src="painting-5.jpg" alt="Sans titre 05" loading="lazy"></div>
+          <div class="artwork-overlay-info">
+            <span class="overlay-num">05</span><span class="overlay-title">Sans titre 05</span>
+          </div>
+          <div class="artwork-caption">
+            <span class="caption-num">05</span>
+            <div class="caption-text"><h3>Sans titre 05</h3><p>Acrylique et stylo — 2025</p></div>
+            <span class="caption-arrow">→</span>
+          </div>
+        </article>
+      </div>
+
+      <!-- Ligne 3 -->
+      <div class="gallery-row row-3">
+        <article class="artwork" data-index="5">
+          <div class="artwork-img-wrap"><img src="painting-6.jpg" alt="Sans titre 06" loading="lazy"></div>
+          <div class="artwork-overlay-info">
+            <span class="overlay-num">06</span><span class="overlay-title">Sans titre 06</span>
+          </div>
+          <div class="artwork-caption">
+            <span class="caption-num">06</span>
+            <div class="caption-text"><h3>Sans titre 06</h3><p>Acrylique et spray — 2025</p></div>
+            <span class="caption-arrow">→</span>
+          </div>
+        </article>
+        <article class="artwork" data-index="6">
+          <div class="artwork-img-wrap"><img src="painting-7.jpg" alt="Sans titre 07" loading="lazy"></div>
+          <div class="artwork-overlay-info">
+            <span class="overlay-num">07</span><span class="overlay-title">Sans titre 07</span>
+          </div>
+          <div class="artwork-caption">
+            <span class="caption-num">07</span>
+            <div class="caption-text"><h3>Sans titre 07</h3><p>Acrylique sur toile — 2025</p></div>
+            <span class="caption-arrow">→</span>
+          </div>
+        </article>
+      </div>
+
+    </div><!-- /gallery-stage -->
+  </div><!-- /scene-gallery -->
+
+  <!-- ═══════════════════════════════════════════
+       SCÈNE 2 — À PROPOS
+  ═══════════════════════════════════════════ -->
+  <div id="scene-about" class="scene">
+
+    <div class="about-bg">
+      <img src="painting-3.jpg" alt="">
+    </div>
+
+    <div class="about-inner">
+      <div class="about-left">
+        <img src="painting-3.jpg" alt="Œuvre de Koco">
+      </div>
       <div class="about-right">
         <h2 class="about-title">
-          <span class="about-title-line">Koco</span>
-          <span class="about-title-line about-title-italic">peint</span>
-          <span class="about-title-line">brut.</span>
+          <span class="about-title-line"><span class="abt-inner">Koco</span></span>
+          <span class="about-title-line about-title-italic"><span class="abt-inner">peint</span></span>
+          <span class="about-title-line"><span class="abt-inner">brut.</span></span>
         </h2>
-
         <div class="about-body">
           <p class="about-p">Peintre autodidacte basé à Lyon, Koco explore un langage visuel brut et instinctif mêlant expressionnisme, graffiti et iconographie tribale.</p>
           <p class="about-p">Chaque toile est un territoire peuplé de créatures hybrides, de glyphes énigmatiques et de couleurs saturées qui dialoguent sans jamais s'expliquer.</p>
         </div>
-
         <div class="about-stats">
           <div class="stat"><span class="stat-num">07</span><span class="stat-label">Œuvres</span></div>
           <div class="stat"><span class="stat-num">2025</span><span class="stat-label">Année</span></div>
           <div class="stat"><span class="stat-num">Lyon</span><span class="stat-label">Lieu</span></div>
         </div>
-
         <div class="about-tags">
           <span>Acrylique</span><span>Spray</span><span>Stylo</span><span>Expressionnisme</span><span>Lyon</span>
         </div>
       </div>
     </div>
 
-  </section>
+  </div><!-- /scene-about -->
 
-  <!-- ========================================
-       CONTACT — plein écran dramatique
-  ======================================== -->
-  <section id="contact" class="scene">
+  <!-- ═══════════════════════════════════════════
+       SCÈNE 3 — CONTACT
+  ═══════════════════════════════════════════ -->
+  <div id="scene-contact" class="scene">
 
-    <div class="contact-bg-art" aria-hidden="true">
+    <div class="contact-bg-wrap">
       <img src="painting-5.jpg" alt="">
     </div>
 
     <div class="contact-inner">
-      <div class="section-header">
-        <div class="section-num">03</div>
-        <h2 class="section-title">Contact</h2>
-        <div class="section-line"></div>
+      <div class="contact-label">
+        <span class="cl-num">03</span>
+        <span class="cl-title">Contact</span>
+        <span class="cl-line"></span>
       </div>
 
-      <div class="contact-content">
-        <h2 class="contact-title">
-          <span class="ct-line ct-line-1">Prenons</span>
-          <span class="ct-line ct-line-2">contact<span class="ct-dot">.</span></span>
-        </h2>
+      <h2 class="contact-title">
+        <span class="ct-line"><span class="ct-inner">Prenons</span></span>
+        <span class="ct-line ct-italic"><span class="ct-inner">contact<span class="ct-dot">.</span></span></span>
+      </h2>
 
-        <p class="contact-sub">Acquisitions · Expositions · Collaborations</p>
+      <p class="contact-sub">Acquisitions · Expositions · Collaborations</p>
 
-        <a href="mailto:contact@koco.art" class="contact-link">
-          <span class="link-text">contact@koco.art</span>
-          <span class="link-arrow">↗</span>
-        </a>
-      </div>
+      <a href="mailto:contact@koco.art" class="contact-link">
+        <span class="link-text">contact@koco.art</span>
+        <span class="link-arrow">↗</span>
+      </a>
     </div>
 
-    <!-- Marquee bas de page -->
     <div class="contact-marquee">
       <div class="marquee-track">
         <span>KOCO.</span><span>LYON</span><span>2025</span><span>PEINTURE</span><span>BRUT</span>
@@ -326,7 +268,7 @@
       </div>
     </div>
 
-  </section>
+  </div><!-- /scene-contact -->
 
   <!-- LIGHTBOX -->
   <div id="lightbox" aria-hidden="true">
@@ -339,7 +281,7 @@
         <p id="lightbox-desc"></p>
       </div>
     </div>
-    <button class="lightbox-close" aria-label="Fermer">✕</button>
+    <button class="lightbox-close" aria-label="Fermer">✕ FERMER</button>
     <button class="lightbox-prev" aria-label="Précédent">←</button>
     <button class="lightbox-next" aria-label="Suivant">→</button>
   </div>
