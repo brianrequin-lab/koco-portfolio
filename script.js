@@ -50,10 +50,13 @@ gsap.registerPlugin(ScrollTrigger);
   }
 
   function loaderExit() {
-    gsap.to(loader, {
-      yPercent: -100, duration: 1.1, ease: 'expo.inOut',
-      onComplete: function() { loader.style.display = 'none'; boot(); }
-    });
+    var bootCalled = false;
+    function doBoot() {
+      if (bootCalled) return; bootCalled = true;
+      loader.style.display = 'none'; boot();
+    }
+    gsap.to(loader, { yPercent: -100, duration: 1.1, ease: 'expo.inOut', onComplete: doBoot });
+    setTimeout(doBoot, 4500); /* safety if GSAP RAF freezes */
   }
 })();
 
