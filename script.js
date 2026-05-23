@@ -71,7 +71,10 @@ function boot() {
   var prevScrollY   = 0;
   var velocity      = 0;
 
-  document.body.style.height = (TOTAL_DEPTH + window.innerHeight) + 'px';
+  /* Lock native scroll — virtual engine only */
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+  document.body.style.height = '100vh';
 
   window.addEventListener('wheel', function(e) {
     e.preventDefault();
