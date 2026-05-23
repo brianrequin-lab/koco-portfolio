@@ -26,9 +26,9 @@ gsap.registerPlugin(ScrollTrigger);
 /* ══ LOADER ══ */
 (function initLoader() {
   const loader   = document.getElementById('loader');
-  const bar      = loader && loader.querySelector('.loader-bar-fill');
-  const letters  = loader && loader.querySelectorAll('.loader-letter');
-  const numEl    = loader && loader.querySelector('.loader-num');
+  const bar      = loader && loader.querySelector('.loader-bar');
+  const letters  = loader && loader.querySelectorAll('.loader-text span');
+  const numEl    = loader && loader.querySelector('.loader-counter');
   if (!loader) { boot(); return; }
 
   let progress = 0;
