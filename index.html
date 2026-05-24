@@ -3,23 +3,349 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Koco. — Peintre</title>
+  <title>Koco. — Galerie d'art</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<div id="loader"><div class="loader-inner"><div class="loader-line"></div><div class="loader-name">KOCO.</div><div class="loader-counter"><span id="loader-num">0</span>%</div></div></div>
+
+<!-- CURSOR -->
 <div id="cursor"></div>
 <div id="cursor-follower"></div>
-<nav id="nav"><a href="#hero" class="nav-logo">KOCO.</a><div class="nav-links"><a href="#hero" class="nav-link active" data-section="hero">Intro</a><a href="#works" class="nav-link" data-section="works">Oeuvres</a><a href="#about" class="nav-link" data-section="about">A propos</a><a href="#contact" class="nav-link" data-section="contact">Contact</a></div></nav>
-<section id="hero" class="section"><div class="hero-bg"><img src="painting-1.jpg" alt="" id="hero-img" class="hero-bg-img"/><div class="hero-bg-overlay"></div></div><div class="hero-content"><div class="hero-eyebrow"><span class="eyebrow-line"></span><span>Lyon 2025</span></div><h1 class="hero-title"><span class="hero-word">Peint</span><span class="hero-word accent">brut.</span></h1><p class="hero-sub">07 oeuvres</p></div><div class="hero-scroll-hint"><span>SCROLL</span><span class="scroll-bar"></span></div><div class="hero-floating f1"><img src="painting-3.jpg" alt=""/></div><div class="hero-floating f2"><img src="painting-5.jpg" alt=""/></div></section>
-<section id="works" class="section"><div class="section-header reveal-up"><span class="section-num">01</span><span class="section-title">OEUVRES</span><span class="section-count">07 pieces</span></div><div class="gallery-grid"><div class="artwork large reveal-artwork" data-index="0"><div class="artwork-img"><img src="painting-1.jpg" alt="01" loading="lazy"/></div><div class="artwork-info"><span class="art-num">01</span><span class="art-name">Sans titre 01</span></div></div><div class="artwork small reveal-artwork" data-index="1"><div class="artwork-img"><img src="painting-2.jpg" alt="02" loading="lazy"/></div><div class="artwork-info"><span class="art-num">02</span><span class="art-name">Sans titre 02</span></div></div><div class="artwork small reveal-artwork" data-index="2"><div class="artwork-img"><img src="painting-3.jpg" alt="03" loading="lazy"/></div><div class="artwork-info"><span class="art-num">03</span><span class="art-name">Sans titre 03</span></div></div><div class="artwork medium reveal-artwork" data-index="3"><div class="artwork-img"><img src="painting-4.jpg" alt="04" loading="lazy"/></div><div class="artwork-info"><span class="art-num">04</span><span class="art-name">Sans titre 04</span></div></div><div class="artwork medium reveal-artwork" data-index="4"><div class="artwork-img"><img src="painting-5.jpg" alt="05" loading="lazy"/></div><div class="artwork-info"><span class="art-num">05</span><span class="art-name">Sans titre 05</span></div></div><div class="artwork small reveal-artwork" data-index="5"><div class="artwork-img"><img src="painting-6.jpg" alt="06" loading="lazy"/></div><div class="artwork-info"><span class="art-num">06</span><span class="art-name">Sans titre 06</span></div></div><div class="artwork small reveal-artwork" data-index="6"><div class="artwork-img"><img src="painting-7.jpg" alt="07" loading="lazy"/></div><div class="artwork-info"><span class="art-num">07</span><span class="art-name">Sans titre 07</span></div></div></div></section>
-<section id="about" class="section"><div class="about-inner"><div class="about-left reveal-up"><span class="section-num">02</span><span class="section-title">KOCO</span><div class="about-tags"><span>Acrylique</span><span>Spray</span><span>Brut</span><span>Figuratif</span></div></div><div class="about-right"><h2 class="about-headline"><span class="line-wrap"><span class="reveal-line">Koco peint</span></span><span class="line-wrap"><em class="reveal-line">brut.</em></span></h2><p class="about-text reveal-fade">Peintre lyonnais autodidacte, ses oeuvres sont des cris silencieux, sauvages, vivants.</p><p class="about-text reveal-fade">Chaque toile est une seance. Les figures emergent sans plan.</p><div class="about-stats reveal-fade"><div class="stat"><span class="stat-num">07</span><span class="stat-label">Oeuvres</span></div><div class="stat"><span class="stat-num">2025</span><span class="stat-label">Annee</span></div><div class="stat"><span class="stat-num">Lyon</span><span class="stat-label">Ville</span></div></div></div></div></section>
-<div class="marquee-section" aria-hidden="true"><div class="marquee-track"><span>DISPONIBLE</span><span class="dot">.</span><span>CONTACT</span><span class="dot">.</span><span>COMMANDES</span><span class="dot">.</span><span>EXPOSITIONS</span><span class="dot">.</span><span>DISPONIBLE</span><span class="dot">.</span><span>CONTACT</span><span class="dot">.</span><span>COMMANDES</span><span class="dot">.</span><span>EXPOSITIONS</span><span class="dot">.</span></div></div>
-<section id="contact" class="section"><div class="contact-inner"><div class="contact-header reveal-up"><span class="section-num">03</span><span class="section-title">CONTACT</span></div><h2 class="contact-headline"><span class="line-wrap"><span class="reveal-line">Travaillons</span></span><span class="line-wrap"><span class="reveal-line">ensemble.</span></span></h2><p class="contact-sub reveal-fade">Commandes, expositions, collaborations</p><a href="mailto:koco@art.fr" class="contact-email reveal-fade">koco@art.fr</a></div><div class="contact-bg-text" aria-hidden="true">KOCO</div></section>
-<div id="lightbox"><button id="lightbox-close">X</button><img id="lightbox-img" src="" alt=""/></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-content">
+    <div class="loader-logo">KOCO.</div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+    <div class="loader-num"><span id="loader-count">0</span>%</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">KOCO.</a>
+  <div class="nav-links">
+    <a href="#galerie" class="nav-link">Galerie</a>
+    <a href="#manifeste" class="nav-link">Manifeste</a>
+    <a href="#about" class="nav-link">À propos</a>
+    <a href="#contact" class="nav-link">Contact</a>
+  </div>
+  <button class="nav-menu" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero" class="section">
+  <div class="hero-bg">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+    <div class="hero-grid"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <p class="hero-eyebrow">Galerie d'art — Paris</p>
+      <h1 class="hero-title">
+        <span class="hero-title-line reveal-line">L'art comme</span>
+        <span class="hero-title-line reveal-line">état d'âme.</span>
+      </h1>
+      <p class="hero-sub reveal-up">Koco. peint des œuvres abstraites nées de l'émotion brute,<br>de la mémoire et du mouvement.</p>
+      <div class="hero-ctas reveal-up">
+        <a href="#galerie" class="btn btn-primary">Entrer dans la galerie</a>
+        <a href="#manifeste" class="btn btn-ghost">Voir le manifeste</a>
+      </div>
+    </div>
+    <div class="hero-cards">
+      <div class="art-card art-card-1" data-tilt>
+        <div class="art-card-painting painting-1"></div>
+        <div class="art-card-info">
+          <span class="art-card-title">Corps & Ocre</span>
+          <span class="art-card-year">2024</span>
+        </div>
+      </div>
+      <div class="art-card art-card-2" data-tilt>
+        <div class="art-card-painting painting-2"></div>
+        <div class="art-card-info">
+          <span class="art-card-title">Territoire</span>
+          <span class="art-card-year">2023</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll-indicator">
+    <span>↓ Défiler</span>
+  </div>
+  <div class="hero-side-num">01</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>KOCO.</span><span class="dot">◆</span>
+    <span>GALERIE D'ART</span><span class="dot">◆</span>
+    <span>PARIS</span><span class="dot">◆</span>
+    <span>ŒUVRES ORIGINALES</span><span class="dot">◆</span>
+    <span>ACRYLIQUE & HUILE</span><span class="dot">◆</span>
+    <span>KOCO.</span><span class="dot">◆</span>
+    <span>GALERIE D'ART</span><span class="dot">◆</span>
+    <span>PARIS</span><span class="dot">◆</span>
+    <span>ŒUVRES ORIGINALES</span><span class="dot">◆</span>
+    <span>ACRYLIQUE & HUILE</span><span class="dot">◆</span>
+    <span>KOCO.</span><span class="dot">◆</span>
+    <span>GALERIE D'ART</span><span class="dot">◆</span>
+    <span>PARIS</span><span class="dot">◆</span>
+    <span>ŒUVRES ORIGINALES</span><span class="dot">◆</span>
+    <span>ACRYLIQUE & HUILE</span><span class="dot">◆</span>
+  </div>
+</div>
+
+<!-- GALERIE -->
+<section id="galerie" class="section">
+  <div class="section-inner">
+    <div class="section-header reveal-up">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Galerie</h2>
+      <p class="section-sub">Œuvres récentes</p>
+    </div>
+    <div class="gallery-filters reveal-up">
+      <button class="filter-btn active" data-filter="all">Tous</button>
+      <button class="filter-btn" data-filter="abstraction">Abstractions</button>
+      <button class="filter-btn" data-filter="serie">Séries</button>
+      <button class="filter-btn" data-filter="grand">Grandes formats</button>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item reveal-up" data-filter="abstraction grand" data-index="0">
+        <div class="gallery-img-wrap">
+          <img src="painting-1.jpg" alt="Corps et Ocre" loading="lazy"/>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-content">
+              <h3>Corps & Ocre</h3>
+              <p>2024 — Acrylique sur toile — 120×160cm</p>
+              <button class="gallery-view-btn" data-img="painting-1.jpg" data-title="Corps & Ocre" data-info="2024 — Acrylique sur toile — 120×160cm">Voir →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item reveal-up" data-filter="abstraction" data-index="1">
+        <div class="gallery-img-wrap">
+          <img src="painting-2.jpg" alt="Cri Codé" loading="lazy"/>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-content">
+              <h3>Cri Codé</h3>
+              <p>2023 — Huile & pigment — 90×120cm</p>
+              <button class="gallery-view-btn" data-img="painting-2.jpg" data-title="Cri Codé" data-info="2023 — Huile & pigment — 90×120cm">Voir →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item reveal-up" data-filter="serie" data-index="2">
+        <div class="gallery-img-wrap">
+          <img src="painting-3.jpg" alt="Léo" loading="lazy"/>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-content">
+              <h3>Léo</h3>
+              <p>2024 — Acrylique — 80×80cm</p>
+              <button class="gallery-view-btn" data-img="painting-3.jpg" data-title="Léo" data-info="2024 — Acrylique — 80×80cm">Voir →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item reveal-up" data-filter="grand" data-index="3">
+        <div class="gallery-img-wrap">
+          <img src="painting-4.jpg" alt="Territoire" loading="lazy"/>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-content">
+              <h3>Territoire</h3>
+              <p>2023 — Technique mixte — 150×200cm</p>
+              <button class="gallery-view-btn" data-img="painting-4.jpg" data-title="Territoire" data-info="2023 — Technique mixte — 150×200cm">Voir →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item reveal-up" data-filter="abstraction serie" data-index="4">
+        <div class="gallery-img-wrap">
+          <img src="painting-5.jpg" alt="Sans Titre 7" loading="lazy"/>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-content">
+              <h3>Sans Titre #7</h3>
+              <p>2022 — Acrylique sur toile — 100×140cm</p>
+              <button class="gallery-view-btn" data-img="painting-5.jpg" data-title="Sans Titre #7" data-info="2022 — Acrylique sur toile — 100×140cm">Voir →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item reveal-up" data-filter="serie grand" data-index="5">
+        <div class="gallery-img-wrap">
+          <img src="painting-6.jpg" alt="Cérémonie" loading="lazy"/>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-content">
+              <h3>Cérémonie</h3>
+              <p>2022 — Huile sur toile — 120×180cm</p>
+              <button class="gallery-view-btn" data-img="painting-6.jpg" data-title="Cérémonie" data-info="2022 — Huile sur toile — 120×180cm">Voir →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item reveal-up gallery-item-wide" data-filter="abstraction grand" data-index="6">
+        <div class="gallery-img-wrap">
+          <img src="painting-7.jpg" alt="Mémoire Brute" loading="lazy"/>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-content">
+              <h3>Mémoire Brute</h3>
+              <p>2024 — Huile & acrylique — 180×240cm</p>
+              <button class="gallery-view-btn" data-img="painting-7.jpg" data-title="Mémoire Brute" data-info="2024 — Huile & acrylique — 180×240cm">Voir →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTE -->
+<section id="manifeste" class="section section-manifeste">
+  <div class="manifeste-bg"></div>
+  <div class="manifeste-inner">
+    <div class="manifeste-text">
+      <span class="section-num manifeste-num reveal-up">03 — MANIFESTE</span>
+      <blockquote class="manifeste-quote reveal-up">
+        <span class="quote-mark">«</span> Je peins ce que<br>
+        je ne sais pas encore<br>
+        nommer. <span class="quote-mark">»</span>
+      </blockquote>
+      <div class="manifeste-dash reveal-up"></div>
+      <cite class="manifeste-author reveal-up">— Koco., 2024</cite>
+      <p class="manifeste-body reveal-up">Mon travail naît d'une tension permanente entre le contrôle et l'abandon. Chaque toile est un territoire à conquérir, puis à laisser exister. Je cherche dans la couleur ce que les mots refusent de dire.</p>
+    </div>
+    <div class="manifeste-art reveal-up">
+      <div class="manifeste-painting">
+        <img src="painting-7.jpg" alt="Série Mémoire Brute"/>
+        <div class="manifeste-art-overlay"></div>
+        <span class="manifeste-art-label">Série : Mémoire Brute</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- À PROPOS -->
+<section id="about" class="section section-about">
+  <div class="section-inner">
+    <div class="about-content">
+      <div class="about-left reveal-up">
+        <span class="section-num">04 — À PROPOS</span>
+        <h2 class="about-name">Koco.</h2>
+        <p class="about-subtitle">Artiste plasticien — Paris</p>
+        <div class="about-dash"></div>
+        <p class="about-bio">Né à Dakar, formé entre Paris et Berlin, Koco. développe depuis 2015 une pratique picturale nourrie par la mémoire collective et l'expérience du corps dans l'espace.</p>
+        <p class="about-bio">Ses œuvres ont été présentées dans des galeries en France, en Allemagne et au Sénégal. Il travaille principalement à l'acrylique, à l'huile et aux pigments naturels.</p>
+        <div class="about-stats">
+          <div class="stat">
+            <span class="stat-num" data-target="9">0</span>
+            <span class="stat-label">ans de pratique</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num" data-target="47">0</span>
+            <span class="stat-label">œuvres exposées</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num" data-target="12">0</span>
+            <span class="stat-label">galeries partenaires</span>
+          </div>
+        </div>
+      </div>
+      <div class="about-right reveal-up">
+        <div class="about-portrait">
+          <img src="painting-3.jpg" alt="Koco. dans son atelier"/>
+          <div class="about-portrait-overlay">
+            <span class="about-portrait-label">Atelier, Paris 10e — 2024</span>
+            <span class="about-portrait-watermark">KOCO.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section section-contact">
+  <div class="contact-top-line"></div>
+  <div class="section-inner">
+    <div class="contact-content">
+      <div class="contact-left reveal-up">
+        <span class="section-num">05 — CONTACT</span>
+        <h2 class="contact-title">Travaillons<br>ensemble.</h2>
+        <div class="contact-details">
+          <div class="contact-item">
+            <span class="contact-label">Email</span>
+            <a href="mailto:contact@koco.art" class="contact-value">contact@koco.art</a>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">Instagram</span>
+            <a href="https://instagram.com/koco.art" target="_blank" rel="noopener" class="contact-value">@koco.art</a>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">Représentation</span>
+            <span class="contact-value">Galerie Fenêtre, Paris</span>
+          </div>
+        </div>
+      </div>
+      <div class="contact-right reveal-up">
+        <a href="mailto:contact@koco.art" class="contact-cta-btn">Envoyer un message →</a>
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="form-field">
+            <input type="text" name="name" placeholder="Votre nom" required autocomplete="off"/>
+          </div>
+          <div class="form-field">
+            <input type="email" name="email" placeholder="Votre email" required autocomplete="off"/>
+          </div>
+          <div class="form-field">
+            <input type="text" name="subject" placeholder="Sujet" autocomplete="off"/>
+          </div>
+          <div class="form-field">
+            <textarea name="message" placeholder="Votre message" rows="4"></textarea>
+          </div>
+          <button type="submit" class="btn btn-submit">Envoyer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">KOCO.</span>
+    <span class="footer-copy">© 2024 Koco. — Tous droits réservés</span>
+    <nav class="footer-nav">
+      <a href="#galerie">Galerie</a>
+      <a href="#manifeste">Manifeste</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="lightbox-backdrop"></div>
+  <div class="lightbox-content">
+    <button id="lightbox-close" class="lightbox-close" aria-label="Fermer">✕</button>
+    <button class="lightbox-prev" aria-label="Précédent">←</button>
+    <button class="lightbox-next" aria-label="Suivant">→</button>
+    <div class="lightbox-img-wrap">
+      <img id="lightbox-img" src="" alt=""/>
+    </div>
+    <div class="lightbox-info">
+      <h3 id="lightbox-title"></h3>
+      <p id="lightbox-detail"></p>
+      <span class="lightbox-available">● Disponible</span>
+      <a href="#contact" id="lightbox-contact" class="btn btn-primary">Demander un renseignement</a>
+    </div>
+  </div>
+</div>
+
 <script src="script.js"></script>
 </body>
 </html>
